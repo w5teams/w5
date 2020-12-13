@@ -1,0 +1,87 @@
+{
+  "identification": "w5soar",
+  "name": "Mysql",
+  "version": "0.1",
+  "description": "一个常用的关系型数据库管理系统",
+  "type": "数据引擎",
+  "action": [
+    {
+      "name": "查询",
+      "func": "query"
+    },
+    {
+      "name": "增删改",
+      "func": "update"
+    }
+  ],
+  "args": {
+    "query": [
+      {
+        "key": "host",
+        "type": "text",
+        "required": true,
+        "default": "localhost"
+      },
+      {
+        "key": "port",
+        "type": "number",
+        "required": true,
+        "default": 3306
+      },
+      {
+        "key": "user",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "passwd",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "db",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "sql",
+        "type": "textarea",
+        "required": true
+      }
+    ],
+    "update": [
+      {
+        "key": "host",
+        "type": "text",
+        "required": true,
+        "default": "localhost"
+      },
+      {
+        "key": "port",
+        "type": "number",
+        "required": true,
+        "default": 3306
+      },
+      {
+        "key": "user",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "passwd",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "db",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "sql",
+        "type": "textarea",
+        "required": true
+      }
+    ]
+  }
+}

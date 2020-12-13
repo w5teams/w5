@@ -1,0 +1,22 @@
+{
+  "identification": "w5soar",
+  "name": "QQ 查询",
+  "version": "0.1",
+  "description": "查询QQ头像和昵称",
+  "type": "信息查询",
+  "action": [
+    {
+      "name": "查询QQ信息",
+      "func": "query"
+    }
+  ],
+  "args": {
+    "query": [
+      {
+        "key": "qq",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}

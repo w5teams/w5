@@ -1,0 +1,68 @@
+{
+  "identification": "w5soar",
+  "name": "E-Mail",
+  "version": "0.1",
+  "description": "可以发送邮件的APP",
+  "type": "消息通知",
+  "action": [
+    {
+      "name": "邮件发送",
+      "func": "send"
+    }
+  ],
+  "args": {
+    "send": [
+      {
+        "key": "host",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "port",
+        "type": "number",
+        "required": true,
+        "default": 25
+      },
+      {
+        "key": "user",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "passwd",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "sender",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "to",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "title",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "type",
+        "type": "select",
+        "required": true,
+        "default": "text",
+        "data": [
+          "text",
+          "html"
+        ]
+      },
+      {
+        "key": "text",
+        "type": "textarea",
+        "required": true
+      }
+    ]
+  }
+}

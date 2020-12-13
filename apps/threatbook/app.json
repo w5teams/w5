@@ -1,0 +1,59 @@
+{
+  "identification": "w5soar",
+  "name": "微步威胁情报",
+  "version": "0.1",
+  "description": "国内商业威胁情报",
+  "type": "信息查询",
+  "action": [
+    {
+      "name": "IP 分析",
+      "func": "ip_query"
+    },
+    {
+      "name": "IP 信誉",
+      "func": "ip_reputation"
+    },
+    {
+      "name": "域名分析",
+      "func": "domain_query"
+    }
+  ],
+  "args": {
+    "ip_query": [
+      {
+        "key": "key",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "ip",
+        "type": "text",
+        "required": true
+      }
+    ],
+    "ip_reputation": [
+      {
+        "key": "key",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "ip",
+        "type": "text",
+        "required": true
+      }
+    ],
+    "domain_query": [
+      {
+        "key": "key",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "domain",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "identification": "w5soar",
+  "name": "Server酱",
+  "version": "0.1",
+  "description": "Server酱微信通知",
+  "type": "消息通知",
+  "action": [
+    {
+      "name": "微信通知",
+      "func": "send"
+    }
+  ],
+  "args": {
+    "send": [
+      {
+        "key": "key",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "text",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "desp",
+        "type": "textarea",
+        "required": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "identification": "w5soar",
+  "name": "银行卡查询",
+  "version": "0.1",
+  "description": "查询银行信息，发卡行、卡类型",
+  "type": "信息查询",
+  "action": [
+    {
+      "name": "查询信息",
+      "func": "query"
+    }
+  ],
+  "args": {
+    "query": [
+      {
+        "key": "card",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}

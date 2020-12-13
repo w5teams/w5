@@ -1,0 +1,22 @@
+{
+  "identification": "w5soar",
+  "name": "中文分词",
+  "version": "0.1",
+  "description": "将一整段文字拆解为多个词语",
+  "type": "其他",
+  "action": [
+    {
+      "name": "中文分词",
+      "func": "make"
+    }
+  ],
+  "args": {
+    "make": [
+      {
+        "key": "text",
+        "type": "textarea",
+        "required": true
+      }
+    ]
+  }
+}

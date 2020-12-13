@@ -1,0 +1,44 @@
+{
+  "identification": "w5soar",
+  "name": "Win远程命令",
+  "version": "0.1",
+  "description": "Windows winrm 客户端，执行远程命令",
+  "type": "命令执行",
+  "action": [
+    {
+      "name": "执行命令",
+      "func": "execute"
+    }
+  ],
+  "args": {
+    "execute": [
+      {
+        "key": "host",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "port",
+        "type": "number",
+        "required": true,
+        "default": 5985
+      },
+      {
+        "key": "user",
+        "type": "text",
+        "required": true,
+        "default": "administrator"
+      },
+      {
+        "key": "passwd",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "cmd",
+        "type": "textarea",
+        "required": true
+      }
+    ]
+  }
+}

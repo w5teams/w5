@@ -1,0 +1,37 @@
+{
+  "identification": "w5soar",
+  "name": "nmap",
+  "version": "0.1",
+  "description": "一款端口扫描工具",
+  "type": "安全扫描",
+  "action": [
+    {
+      "name": "端口扫描",
+      "func": "scan"
+    }
+  ],
+  "args": {
+    "scan": [
+      {
+        "key": "Target",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "Port",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "Protocol",
+        "type": "select",
+        "required": true,
+        "default": "tcp",
+        "data": [
+          "tcp",
+          "udp"
+        ]
+      }
+    ]
+  }
+}

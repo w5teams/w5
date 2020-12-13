@@ -1,0 +1,27 @@
+{
+  "identification": "w5soar",
+  "name": "钉钉通知",
+  "version": "0.1",
+  "description": "钉钉消息通知",
+  "type": "消息通知",
+  "action": [
+    {
+      "name": "钉钉通知",
+      "func": "send"
+    }
+  ],
+  "args": {
+    "send": [
+      {
+        "key": "access_token",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "msg",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}

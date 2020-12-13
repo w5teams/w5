@@ -1,0 +1,170 @@
+{
+  "identification": "w5soar",
+  "name": "Redis",
+  "version": "0.1",
+  "description": "一个 key-value 存储系统",
+  "type": "数据引擎",
+  "action": [
+    {
+      "name": "GET",
+      "func": "get"
+    },
+    {
+      "name": "SET",
+      "func": "set"
+    },
+    {
+      "name": "DEL",
+      "func": "delete"
+    },
+    {
+      "name": "清空数据-单个DB",
+      "func": "flushdb"
+    },
+    {
+      "name": "清空数据-全部DB",
+      "func": "flushall"
+    }
+  ],
+  "args": {
+    "get": [
+      {
+        "key": "host",
+        "type": "text",
+        "required": true,
+        "default": "localhost"
+      },
+      {
+        "key": "port",
+        "type": "number",
+        "required": true,
+        "default": 6379
+      },
+      {
+        "key": "db",
+        "type": "number",
+        "required": true,
+        "default": 0
+      },
+      {
+        "key": "password",
+        "type": "text",
+        "required": false
+      },
+      {
+        "key": "key",
+        "type": "text",
+        "required": true
+      }
+    ],
+    "set": [
+      {
+        "key": "host",
+        "type": "text",
+        "required": true,
+        "default": "localhost"
+      },
+      {
+        "key": "port",
+        "type": "number",
+        "required": true,
+        "default": 6379
+      },
+      {
+        "key": "db",
+        "type": "number",
+        "required": true,
+        "default": 0
+      },
+      {
+        "key": "password",
+        "type": "text",
+        "required": false
+      },
+      {
+        "key": "key",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "value",
+        "type": "text",
+        "required": true
+      }
+    ],
+    "delete": [
+      {
+        "key": "host",
+        "type": "text",
+        "required": true,
+        "default": "localhost"
+      },
+      {
+        "key": "port",
+        "type": "number",
+        "required": true,
+        "default": 6379
+      },
+      {
+        "key": "db",
+        "type": "number",
+        "required": true,
+        "default": 0
+      },
+      {
+        "key": "password",
+        "type": "text",
+        "required": false
+      },
+      {
+        "key": "key",
+        "type": "text",
+        "required": true
+      }
+    ],
+    "flushdb": [
+      {
+        "key": "host",
+        "type": "text",
+        "required": true,
+        "default": "localhost"
+      },
+      {
+        "key": "port",
+        "type": "number",
+        "required": true,
+        "default": 6379
+      },
+      {
+        "key": "db",
+        "type": "number",
+        "required": true,
+        "default": 0
+      },
+      {
+        "key": "password",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "flushall": [
+      {
+        "key": "host",
+        "type": "text",
+        "required": true,
+        "default": "localhost"
+      },
+      {
+        "key": "port",
+        "type": "number",
+        "required": true,
+        "default": 6379
+      },
+      {
+        "key": "password",
+        "type": "text",
+        "required": false
+      }
+    ]
+  }
+}

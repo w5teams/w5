@@ -1,0 +1,22 @@
+{
+  "identification": "w5soar",
+  "name": "红名检测",
+  "version": "0.1",
+  "description": "检测域名是否在微信、QQ中报红",
+  "type": "信息查询",
+  "action": [
+    {
+      "name": "查询信息",
+      "func": "query"
+    }
+  ],
+  "args": {
+    "query": [
+      {
+        "key": "domain",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}

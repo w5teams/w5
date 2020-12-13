@@ -1,0 +1,22 @@
+{
+  "identification": "w5soar",
+  "name": "手机号归属地",
+  "version": "0.1",
+  "description": "查询手机号归属地信息",
+  "type": "信息查询",
+  "action": [
+    {
+      "name": "归属地查询",
+      "func": "query"
+    }
+  ],
+  "args": {
+    "query": [
+      {
+        "key": "phone",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}

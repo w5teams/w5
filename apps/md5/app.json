@@ -1,0 +1,32 @@
+{
+  "identification": "w5soar",
+  "name": "MD5",
+  "version": "0.1",
+  "description": "MD5 加密解密",
+  "type": "加密解密",
+  "action": [
+    {
+      "name": "加密",
+      "func": "encryption"
+    }
+  ],
+  "args": {
+    "encryption": [
+      {
+        "key": "text",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "type",
+        "type": "select",
+        "required": true,
+        "data": [
+          "小写",
+          "大写"
+        ],
+        "default": "小写"
+      }
+    ]
+  }
+}

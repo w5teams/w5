@@ -1,0 +1,33 @@
+{
+  "identification": "w5soar",
+  "name": "Base64",
+  "version": "0.1",
+  "description": "Base64 加密解密",
+  "type": "加密解密",
+  "action": [
+    {
+      "name": "加密",
+      "func": "encryption"
+    },
+    {
+      "name": "解密",
+      "func": "decrypt"
+    }
+  ],
+  "args": {
+    "encryption": [
+      {
+        "key": "text",
+        "type": "text",
+        "required": true
+      }
+    ],
+    "decrypt": [
+      {
+        "key": "text",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}

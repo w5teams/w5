@@ -1,0 +1,22 @@
+{
+  "identification": "w5soar",
+  "name": "ICP备案",
+  "version": "0.1",
+  "description": "ICP 备案信息查询",
+  "type": "信息查询",
+  "action": [
+    {
+      "name": "查询信息",
+      "func": "query"
+    }
+  ],
+  "args": {
+    "query": [
+      {
+        "key": "domain",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}

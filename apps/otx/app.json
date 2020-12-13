@@ -1,0 +1,32 @@
+{
+  "identification": "w5soar",
+  "name": "OTX威胁情报",
+  "version": "0.1",
+  "description": "国外 Alienvault OTX 威胁情报",
+  "type": "信息查询",
+  "action": [
+    {
+      "name": "ioc判断",
+      "func": "is_ioc"
+    }
+  ],
+  "args": {
+    "is_ioc": [
+      {
+        "key": "api_key",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "pulse_id",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "ioc",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}
