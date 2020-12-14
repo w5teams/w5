@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  w5:
+    build:
+      context: ./w5
+      dockerfile: Dockerfile
+    restart: always
+    container_name: w5_web
+    volumes:
+      - ./w5/config.ini:/w5/config.ini:ro
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "8888:8888/tcp"
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    container_name: w5_mysql
+    volumes:
+      - ./mysql/mysql-data:/var/lib/mysql
+      - ./mysql/conf.d/w5.cnf:/etc/mysql/mysql.conf.d/w5.cnf:ro
+      - ./mysql/sql:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: "MysqlRoot_P@ss"
+      MYSQL_DATABASE: "w5_db"
+      MYSQL_USER: "w5"
+      MYSQL_PASSWORD: "w5-security"
+    ports:
+      - "13306:3306/tcp"
+
+  redis:
+    image: redis:alpine
+    container_name: w5_redis
+    restart: always
+    environment:
+      REDIS_PASSWORD: ""
+    volumes:
+      - ./redis/redis-data:/data
