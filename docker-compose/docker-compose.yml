@@ -39,3 +39,4 @@ services:
       REDIS_PASSWORD: ""
     volumes:
       - ./redis/redis-data:/data
+
