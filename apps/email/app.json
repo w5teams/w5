@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "E-Mail",
   "version": "0.1",
   "description": "可以发送邮件的APP",

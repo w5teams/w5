@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "IP 查询",
   "version": "0.1",
   "description": "查询地理信息和经纬度",

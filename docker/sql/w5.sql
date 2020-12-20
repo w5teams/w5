@@ -14,20 +14,34 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `w5_logs`;
 CREATE TABLE `w5_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `only_id` varchar(30) NOT NULL DEFAULT '',
   `uuid` varchar(100) NOT NULL,
   `app_uuid` varchar(100) NOT NULL,
   `app_name` varchar(20) NOT NULL DEFAULT '',
   `result` text NOT NULL,
   `status` int(2) NOT NULL DEFAULT '0',
+  `html` text,
+  `args` text,
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 -- ----------------------------
 -- Records of w5_logs
 -- ----------------------------
-BEGIN;
-COMMIT;
+
+
+-- ----------------------------
+--  Table structure for `w5_report`
+-- ----------------------------
+DROP TABLE IF EXISTS `w5_report`;
+CREATE TABLE `w5_report` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `report_no` varchar(30) NOT NULL DEFAULT '',
+  `workflow_name` varchar(50) NOT NULL DEFAULT '',
+  `remarks` varchar(255) NOT NULL DEFAULT '',
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for w5_setting
@@ -47,7 +61,7 @@ CREATE TABLE `w5_setting` (
 -- Records of w5_setting
 -- ----------------------------
 BEGIN;
-INSERT INTO `w5_setting` VALUES (1, 'w5_key', 'W5_is_an_open_source_SOAR_product', '2020-12-02 21:16:15', '2020-11-29 00:32:15');
+INSERT INTO `w5_setting` VALUES (1, 'w5_key', '', '2020-12-02 21:16:15', '2020-11-29 00:32:15');
 INSERT INTO `w5_setting` VALUES (2, 'api_key', '', '2020-12-05 18:40:05', '2020-12-05 18:14:56');
 COMMIT;
 
@@ -136,8 +150,8 @@ CREATE TABLE `w5_version` (
 -- Records of w5_version
 -- ----------------------------
 BEGIN;
-INSERT INTO `w5_version` VALUES (1, 'w5', '0.1', '2020-12-07 10:10:56');
-INSERT INTO `w5_version` VALUES (2, 'apps', '0.1', '2020-12-07 10:10:56');
+INSERT INTO `w5_version` VALUES (1, 'w5', '0.2', '2020-12-07 10:10:56');
+INSERT INTO `w5_version` VALUES (2, 'apps', '0.2', '2020-12-07 10:10:56');
 COMMIT;
 
 -- ----------------------------

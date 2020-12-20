@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "Win远程命令",
   "version": "0.1",
   "description": "Windows winrm 客户端，执行远程命令",

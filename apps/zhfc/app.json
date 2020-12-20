@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "中文分词",
   "version": "0.1",
   "description": "将一整段文字拆解为多个词语",

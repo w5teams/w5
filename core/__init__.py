@@ -2,7 +2,6 @@
 # encoding:utf-8
 import os
 import configparser
-# from loguru import logger
 from flask_cors import CORS
 from flask_orator import Orator
 from flask_redis import FlaskRedis
@@ -10,28 +9,11 @@ from flask_sockets import Sockets
 from core.view import Decorator
 from flask import (Flask, send_from_directory)
 
-version = "0.1"
+version = "0.2"
 
 db = Orator()
 redis = FlaskRedis()
 sockets = Sockets()
-
-
-# def init_log():
-#     base = "/Users/sanjin/work/w5/x_w5/logs"
-#
-#     info_path = os.path.join(base, 'info.{time:YYYY-MM-DD}.log')
-#     error_path = os.path.join(base, 'error.{time:YYYY-MM-DD}.log')
-#
-#     logger.remove()
-#
-#     logger_format = "{time:YYYY-MM-DD HH:mm:ss,SSS} [{thread}] {level} {file} {line} - {message}"
-#
-#     logger.add(info_path, format=logger_format, enqueue=True, rotation="00:00", retention='10 days',
-#                encoding='utf-8', level='INFO')
-#
-#     logger.add(error_path, format=logger_format, enqueue=True, rotation="00:00", retention='10 days',
-#                encoding='utf-8', level='ERROR')
 
 
 def init_route(app):
@@ -45,9 +27,11 @@ def init_route(app):
     from core.view.logs import r as r_logs
     from core.view.dashboard import r as r_dashboard
     from core.view.api import r as r_api
+    from core.view.report import r as r_report
     from core.view.workflow import ws as ws_workflow
 
-    route_list = [r_login, r_user, r_type, r_variablen, r_system, r_apps, r_workflow, r_logs, r_dashboard, r_api]
+    route_list = [r_login, r_user, r_type, r_variablen, r_system, r_apps, r_workflow, r_logs, r_dashboard, r_api,
+                  r_report]
 
     for route in route_list:
         app.register_blueprint(route, url_prefix="/api/v1/w5")
@@ -88,7 +72,7 @@ def init_config(app):
     app.config['apps_path'] = app.config['project_path'] + "/apps"
     app.config['web_path'] = app.config['project_path'] + "/core/web"
     app.config['public_path'] = app.config['project_path'] + "/core/public"
-    app.config['update_path'] = "http://w5-1253132429.cos.ap-beijing.myqcloud.com"
+    app.config['update_path'] = "http://w5-1253132429.file.myqcloud.com"
 
     cf = configparser.ConfigParser()
     cf.read(app.config['project_path'] + '/config.ini')
@@ -146,7 +130,8 @@ def init_cors(app):
         app=app,
         resources={
             r"/api/*": {"origins": "*"},
-            r"/app/*": {"origins": "*"}
+            r"/app/*": {"origins": "*"},
+            r"/public/*": {"origins": "*"}
         }
     )
 

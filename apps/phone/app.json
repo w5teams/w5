@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "手机号归属地",
   "version": "0.1",
   "description": "查询手机号归属地信息",

@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "nmap",
   "version": "0.1",
   "description": "一款端口扫描工具",

@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "Whois",
   "version": "0.1",
   "description": "查询域名注册信息",

@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "OTX威胁情报",
   "version": "0.1",
   "description": "国外 Alienvault OTX 威胁情报",

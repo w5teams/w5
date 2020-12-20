@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "银行卡查询",
   "version": "0.1",
   "description": "查询银行信息，发卡行、卡类型",

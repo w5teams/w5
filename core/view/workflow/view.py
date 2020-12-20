@@ -50,29 +50,62 @@ def get_user_list():
 @r.route("/post/workflow/add", methods=['GET', 'POST'])
 def post_workflow_add():
     if request.method == "POST":
+        type = request.json.get("type", 0)
+
         uuid = Random.make_uuid()
 
         token = request.headers.get("token")
         user_id = redis.get(token)
 
-        Workflow.insert({
-            'uuid': str(uuid),
-            "type_id": 1,
-            "user_id": user_id,
-            'name': "未命名",
-            'start_app': "",
-            'end_app': "",
-            'input_app': "",
-            'webhook_app': "",
-            'flow_json': "",
-            'flow_data': "",
-            'controller_data': "",
-            'local_var_data': "none",
-            'remarks': "",
-            'status': 0,
-            'update_time': Time.get_date_time(),
-            'create_time': Time.get_date_time()
-        })
+        if type == 0:
+            Workflow.insert({
+                'uuid': str(uuid),
+                "type_id": 1,
+                "user_id": user_id,
+                'name': "未命名",
+                'start_app': "",
+                'end_app': "",
+                'input_app': "",
+                'webhook_app': "",
+                'flow_json': "",
+                'flow_data': "",
+                'controller_data': "",
+                'local_var_data': "none",
+                'remarks': "",
+                'status': 0,
+                'update_time': Time.get_date_time(),
+                'create_time': Time.get_date_time()
+            })
+        elif type == 1:
+            name = request.json.get("name", "")
+            remarks = request.json.get("remarks", "")
+            start_app = request.json.get("start_app", "")
+            end_app = request.json.get("end_app", "")
+            input_app = request.json.get("input_app", "")
+            webhook_app = request.json.get("webhook_app", "")
+            flow_json = request.json.get("flow_json", "")
+            flow_data = request.json.get("flow_data", "")
+            controller_data = request.json.get("controller_data", "")
+            local_var_data = request.json.get("local_var_data", "")
+
+            Workflow.insert({
+                'uuid': str(uuid),
+                "type_id": 1,
+                "user_id": user_id,
+                'name': name,
+                'start_app': start_app,
+                'end_app': end_app,
+                'input_app': input_app,
+                'webhook_app': webhook_app,
+                'flow_json': flow_json,
+                'flow_data': flow_data,
+                'controller_data': controller_data,
+                'local_var_data': local_var_data,
+                'remarks': remarks,
+                'status': 0,
+                'update_time': Time.get_date_time(),
+                'create_time': Time.get_date_time()
+            })
 
         return Response.re(data={"uuid": uuid})
 
@@ -156,6 +189,17 @@ def post_workflow_status():
         )
 
         return Response.re()
+
+
+@r.route("/get/workflow/import_url", methods=['GET', 'POST'])
+def post_workflow_import_url():
+    if request.method == "POST":
+        url = request.json.get("url", "")
+        try:
+            r = requests.get(url=url, timeout=10)
+            return Response.re(data={"data": r.json()})
+        except:
+            return Response.re(err=ErrImportUrl)
 
 
 @ws.route('/echo')

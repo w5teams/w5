@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "ICP备案",
   "version": "0.1",
   "description": "ICP 备案信息查询",

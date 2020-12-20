@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "QQ 查询",
   "version": "0.1",
   "description": "查询QQ头像和昵称",

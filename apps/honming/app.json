@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "红名检测",
   "version": "0.1",
   "description": "检测域名是否在微信、QQ中报红",

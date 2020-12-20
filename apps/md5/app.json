@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "MD5",
   "version": "0.1",
   "description": "MD5 加密解密",

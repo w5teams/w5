@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "Mysql",
   "version": "0.1",
   "description": "一个常用的关系型数据库管理系统",

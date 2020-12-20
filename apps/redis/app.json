@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "Redis",
   "version": "0.1",
   "description": "一个 key-value 存储系统",

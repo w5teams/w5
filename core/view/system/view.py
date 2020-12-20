@@ -59,8 +59,6 @@ def check_update():
 
     r = requests.get(url=current_app.config["update_path"] + "/apps/update.json", timeout=30)
 
-    print(r.json())
-
     data = {}
 
     if float(r.json()["w5"]["version"]) > float(version_info[0].version):

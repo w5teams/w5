@@ -119,3 +119,8 @@ class ErrWebhookStatus(object):
 class ErrAppDel(object):
     errcode = 9021
     errmsg = '删除 APP 失败'
+
+
+class ErrImportUrl(object):
+    errcode = 9022
+    errmsg = '请求失败 或 URL不正确'

@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "Hello Word",
   "version": "0.1",
   "description": "W5 SOAR - Hello Word",

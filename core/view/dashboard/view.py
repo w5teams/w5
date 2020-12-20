@@ -13,6 +13,7 @@ def get_dashboard_logs():
             Workflow.__table__ + '.uuid'
         ).select(
             Logs.__table__ + '.id',
+            Logs.__table__ + '.only_id',
             Logs.__table__ + '.uuid',
             Logs.__table__ + ".app_name",
             Logs.__table__ + '.result',

@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "短连接生成",
   "version": "0.1",
   "description": "通过网址生成短连接",

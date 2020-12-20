@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "Server酱",
   "version": "0.1",
   "description": "Server酱微信通知",

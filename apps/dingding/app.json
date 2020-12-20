@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "钉钉通知",
   "version": "0.1",
   "description": "钉钉消息通知",

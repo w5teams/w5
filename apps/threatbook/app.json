@@ -1,5 +1,6 @@
 {
   "identification": "w5soar",
+  "is_public": true,
   "name": "微步威胁情报",
   "version": "0.1",
   "description": "国内商业威胁情报",
