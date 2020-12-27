@@ -30,6 +30,9 @@ def get_user_list():
             Types.__table__ + '.name as type_name',
             Workflow.__table__ + '.remarks',
             Workflow.__table__ + '.status',
+            Workflow.__table__ + '.timer_app',
+            Workflow.__table__ + '.webhook_app',
+            Workflow.__table__ + '.input_app',
         )
 
         if str(type) != "0":
@@ -67,6 +70,7 @@ def post_workflow_add():
                 'end_app': "",
                 'input_app': "",
                 'webhook_app': "",
+                'timer_app': "",
                 'flow_json': "",
                 'flow_data': "",
                 'controller_data': "",
@@ -83,6 +87,7 @@ def post_workflow_add():
             end_app = request.json.get("end_app", "")
             input_app = request.json.get("input_app", "")
             webhook_app = request.json.get("webhook_app", "")
+            timer_app = request.json.get("timer_app", "")
             flow_json = request.json.get("flow_json", "")
             flow_data = request.json.get("flow_data", "")
             controller_data = request.json.get("controller_data", "")
@@ -97,6 +102,7 @@ def post_workflow_add():
                 'end_app': end_app,
                 'input_app': input_app,
                 'webhook_app': webhook_app,
+                'timer_app': timer_app,
                 'flow_json': flow_json,
                 'flow_data': flow_data,
                 'controller_data': controller_data,
@@ -122,12 +128,14 @@ def get_workflow_detail():
             'end_app',
             'input_app',
             'webhook_app',
+            'timer_app',
             'flow_json',
             'flow_data',
             'controller_data',
             'type_id',
             'remarks',
-            'local_var_data'
+            'local_var_data',
+            'status'
         ).where("uuid", uuid).first()
 
         return Response.re(data=workflow_info.serialize())
@@ -142,6 +150,7 @@ def post_workflow_update():
         end_app = request.json.get("end_app", "")
         input_app = request.json.get("input_app", "")
         webhook_app = request.json.get("webhook_app", "")
+        timer_app = request.json.get("timer_app", "")
         flow_json = request.json.get("flow_json", "")
         flow_data = request.json.get("flow_data", "")
         controller_data = request.json.get("controller_data", "")
@@ -149,12 +158,28 @@ def post_workflow_update():
         remarks = request.json.get("remarks", "")
         local_var_data = request.json.get("local_var_data", "")
 
+        if str(controller_data) != "{}":
+            work_info = Workflow.select("timer_app").where('uuid', uuid).first()
+
+            if work_info:
+                if str(work_info.timer_app) == "" or str(work_info.timer_app) == "None" or work_info.timer_app is None:
+                    w_timer_app = ""
+                else:
+                    w_timer_app = work_info.timer_app
+
+                conn = rpyc.connect('localhost', 53124)
+                conn.root.exec(uuid, timer_app, w_timer_app, controller_data)
+                conn.close()
+            else:
+                return Response.re(err=ErrIsNotPlayBook)
+
         Workflow.where('uuid', uuid).update({
             'name': name,
             'start_app': start_app,
             'end_app': end_app,
             'input_app': input_app,
             'webhook_app': webhook_app,
+            'timer_app': timer_app,
             'flow_json': flow_json,
             'flow_data': flow_data,
             'controller_data': controller_data,
@@ -171,6 +196,19 @@ def post_workflow_update():
 def post_workflow_del():
     if request.method == "POST":
         uuid = request.json.get("uuid", "")
+
+        work_info = Workflow.select("timer_app").where('uuid', uuid).first()
+
+        if work_info:
+            if str(work_info.timer_app) == "" or str(work_info.timer_app) == "None" or work_info.timer_app is None:
+                pass
+            else:
+                conn = rpyc.connect('localhost', 53124)
+                conn.root.remove(work_info.timer_app)
+                conn.close()
+        else:
+            return Response.re(err=ErrIsNotPlayBook)
+
         Workflow.where('uuid', uuid).delete()
         return Response.re()
 

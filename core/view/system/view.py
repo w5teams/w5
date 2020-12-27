@@ -126,3 +126,18 @@ def init_key():
     if setting:
         if str(setting.value).strip() == "" or setting.value is None:
             make_api_key()
+
+
+def init_timer():
+    def setting():
+        result = redis.set("manage_timer_lock", 1, nx=True)
+        if result:
+            manage_timer = ManageTimer()
+            manage_timer.start()
+
+            s = ThreadedServer(service=manage_timer, port=53124, auto_register=False)
+            s.start()
+
+    t = threading.Thread(target=setting)
+    t.setDaemon(True)
+    t.start()

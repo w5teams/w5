@@ -41,3 +41,8 @@ class Version(db.Model):
 class Report(db.Model):
     __table__ = 'w5_report'
     __timestamps__ = False
+
+
+class Timer(db.Model):
+    __table__ = 'w5_timer'
+    __timestamps__ = False

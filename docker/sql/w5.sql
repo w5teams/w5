@@ -5,9 +5,6 @@ SET NAMES utf8;
 SET FOREIGN_KEY_CHECKS = 0;
 USE w5_db;
 
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
 -- ----------------------------
 -- Table structure for w5_logs
 -- ----------------------------
@@ -41,6 +38,25 @@ CREATE TABLE `w5_report` (
   `remarks` varchar(255) NOT NULL DEFAULT '',
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+DROP TABLE IF EXISTS `w5_timer`;
+CREATE TABLE `w5_timer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `timer_uuid` varchar(100) NOT NULL DEFAULT '',
+  `uuid` varchar(100) NOT NULL DEFAULT '',
+  `type` varchar(10) NOT NULL DEFAULT '',
+  `interval_type` varchar(10) NOT NULL DEFAULT '',
+  `time` varchar(50) NOT NULL DEFAULT '',
+  `start_date` varchar(50) NOT NULL DEFAULT '',
+  `end_date` varchar(50) NOT NULL DEFAULT '',
+  `jitter` int(11) NOT NULL DEFAULT '0',
+  `status` int(2) NOT NULL DEFAULT '0',
+  `update_time` datetime DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uid` (`timer_uuid`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -170,6 +186,7 @@ CREATE TABLE `w5_workflow` (
   `end_app` varchar(100) NOT NULL DEFAULT '',
   `input_app` varchar(100) NOT NULL DEFAULT '',
   `webhook_app` varchar(100) NOT NULL DEFAULT '',
+  `timer_app` varchar(100) NOT NULL DEFAULT '',
   `flow_json` text NOT NULL,
   `flow_data` text NOT NULL,
   `controller_data` text,

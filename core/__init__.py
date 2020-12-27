@@ -1,6 +1,8 @@
 # !/usr/bin/env python
 # encoding:utf-8
 import os
+import sys
+import signal
 import configparser
 from flask_cors import CORS
 from flask_orator import Orator
@@ -9,7 +11,7 @@ from flask_sockets import Sockets
 from core.view import Decorator
 from flask import (Flask, send_from_directory)
 
-version = "0.2"
+version = "0.3"
 
 db = Orator()
 redis = FlaskRedis()
@@ -28,10 +30,11 @@ def init_route(app):
     from core.view.dashboard import r as r_dashboard
     from core.view.api import r as r_api
     from core.view.report import r as r_report
+    from core.view.timer import r as r_timer
     from core.view.workflow import ws as ws_workflow
 
     route_list = [r_login, r_user, r_type, r_variablen, r_system, r_apps, r_workflow, r_logs, r_dashboard, r_api,
-                  r_report]
+                  r_report, r_timer]
 
     for route in route_list:
         app.register_blueprint(route, url_prefix="/api/v1/w5")
@@ -74,7 +77,7 @@ def init_config(app):
     app.config['public_path'] = app.config['project_path'] + "/core/public"
     app.config['update_path'] = "http://w5-1253132429.file.myqcloud.com"
 
-    cf = configparser.ConfigParser()
+    cf = configparser.RawConfigParser()
     cf.read(app.config['project_path'] + '/config.ini')
 
     if os.getenv('MYSQL_HOST'):
@@ -152,9 +155,10 @@ def init_web_sockets(app):
 def init_w5(app):
     with open(app.config['apps_path'] + '/version.txt', 'r') as f:
         apps_version = f.read()
-        from core.view.system.view import update_version, init_key
+        from core.view.system.view import update_version, init_key, init_timer
         update_version(w5_version=version, apps_version=apps_version)
         init_key()
+        init_timer()
 
 
 def init_app():
@@ -177,3 +181,15 @@ def init_app():
 
 
 start = init_app()
+
+
+def sign_out(signum, frame):
+    try:
+        redis.delete("manage_timer_lock")
+    except:
+        pass
+
+    sys.exit()
+
+
+signal.signal(signal.SIGINT, sign_out)

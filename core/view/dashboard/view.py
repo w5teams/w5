@@ -19,6 +19,7 @@ def get_dashboard_logs():
             Logs.__table__ + '.result',
             Logs.__table__ + '.create_time',
             Logs.__table__ + '.status',
+            Logs.__table__ + '.args',
             Workflow.__table__ + '.name'
         ).order_by(
             Workflow.__table__ + '.id',

@@ -124,3 +124,8 @@ class ErrAppDel(object):
 class ErrImportUrl(object):
     errcode = 9022
     errmsg = '请求失败 或 URL不正确'
+
+
+class ErrIsNotPlayBook(object):
+    errcode = 9023
+    errmsg = '剧本不存在'

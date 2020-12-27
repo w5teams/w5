@@ -6,7 +6,6 @@ gevent.monkey.patch_all()
 
 import sys
 import platform
-from core import version
 
 
 def w5_info(**kwargs):
@@ -23,7 +22,7 @@ def w5_info(**kwargs):
     print(" ##@$%|||||||||||!`              :%@#@")
     print(" ###@&$||||||||!`               !&###@")
     print(" #####@&&%||||:.             `%&#####@")
-    print(" ########&&&%:   W5 SOAR  '$&@#######@  v{version}".format(version=version))
+    print(" ########&&&%:   W5 SOAR  '$&@#######@  v{version}".format(version=0.3))
     print("=============================================")
     print("* Web : https://w5.io")
     print("* Github : https://github.com/w5hub/w5")
@@ -61,7 +60,6 @@ def start_w5(**kwargs):
         sys.argv.append("--threads")
         sys.argv.append("2")
         sys.argv.append("core:start")
-        sys.argv.append("--reload")
 
         start_http()
 
