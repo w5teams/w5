@@ -9,14 +9,7 @@ import uuid
 class Random(object):
     @staticmethod
     def make_code(length=4):
-        code_list = []
-        for i in range(10):
-            code_list.append(str(i))
-        my_slice = random.sample(code_list, length)
-        number = ''
-        for n in my_slice:
-            number += n + ''
-        return number
+        return ''.join(random.sample([str(i) for i in range(10)], length))
 
     @staticmethod
     def make_order_number(length=5):
