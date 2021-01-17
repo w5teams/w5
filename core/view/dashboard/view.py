@@ -37,11 +37,17 @@ def get_dashboard_sums():
         logs_count = Logs.count()
         logs_err_count = Logs.where("status", "!=", 0).count()
 
+        if redis.exists("exec_sum") == 1:
+            exec_sum = redis.get("exec_sum")
+        else:
+            exec_sum = 0
+
         data = {
             "user_count": user_count,
             "workflow_count": workflow_count,
             "logs_count": logs_count,
-            "logs_err_count": logs_err_count
+            "logs_err_count": logs_err_count,
+            "exec_sum": exec_sum
         }
 
         return Response.re(data=data)

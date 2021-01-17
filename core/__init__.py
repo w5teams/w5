@@ -11,7 +11,7 @@ from flask_sockets import Sockets
 from core.view import Decorator
 from flask import (Flask, send_from_directory)
 
-version = "0.3"
+version = "0.3.1"
 
 db = Orator()
 redis = FlaskRedis()
@@ -72,10 +72,11 @@ def init_public(app):
 
 def init_config(app):
     app.config['project_path'] = os.getcwd()
+    app.config['tmp_path'] = app.config['project_path'] + "/tmp"
     app.config['apps_path'] = app.config['project_path'] + "/apps"
     app.config['web_path'] = app.config['project_path'] + "/core/web"
     app.config['public_path'] = app.config['project_path'] + "/core/public"
-    app.config['update_path'] = "http://w5-1253132429.file.myqcloud.com"
+    app.config['update_path'] = "https://s.w5soar.com"
 
     cf = configparser.RawConfigParser()
     cf.read(app.config['project_path'] + '/config.ini')
@@ -142,7 +143,11 @@ def init_cors(app):
 def init_decorator(app):
     no_path = [
         "/api/v1/w5/login",
-        "/api/v1/w5/webhook"
+        "/api/v1/w5/webhook",
+        "/api/v1/w5/get/workflow_exec",
+        "/api/v1/w5/get/workflow_success_fail",
+        "/api/v1/w5/get/workflow_logs",
+        "/api/v1/w5/get/executing"
     ]
 
     Decorator(app=app, no_path=no_path)
@@ -154,9 +159,8 @@ def init_web_sockets(app):
 
 def init_w5(app):
     with open(app.config['apps_path'] + '/version.txt', 'r') as f:
-        apps_version = f.read()
         from core.view.system.view import update_version, init_key, init_timer
-        update_version(w5_version=version, apps_version=apps_version)
+        update_version(w5_version=version, apps_version=f.read())
         init_key()
         init_timer()
 

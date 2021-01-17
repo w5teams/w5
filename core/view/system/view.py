@@ -50,26 +50,36 @@ def post_system_del():
             Logs.where("id", "!=", "0").delete()
         elif type == 3:
             Variablen.where("id", "!=", "0").delete()
+        elif type == 4:
+            redis.flushdb()
 
         return Response.re()
+
+
+def get_w5_json():
+    try:
+        result = requests.get(url=current_app.config["update_path"] + "/w5.json", timeout=30)
+        return result.json()
+    except Exception as e:
+        print(e)
 
 
 def check_update():
     version_info = Version.select('name', 'version').get()
 
-    r = requests.get(url=current_app.config["update_path"] + "/apps/update.json", timeout=30)
+    w5_data = get_w5_json()
 
     data = {}
 
-    if float(r.json()["w5"]["version"]) > float(version_info[0].version):
+    if VersionUtil.compare(str(w5_data["w5"]["version"]), version_info[0].version) == ">":
         data["is_w5"] = True
-        data["w5"] = r.json()["w5"]
+        data["w5"] = w5_data["w5"]
     else:
         data["is_w5"] = False
 
-    if float(r.json()["apps"]["version"]) > float(version_info[1].version):
+    if VersionUtil.compare(str(w5_data["apps"]["version"]), version_info[1].version) == ">":
         data["is_apps"] = True
-        data["apps"] = r.json()["apps"]
+        data["apps"] = w5_data["apps"]
     else:
         data["is_apps"] = False
 
@@ -103,8 +113,8 @@ def post_system_version():
 @r.route("/get/system/w5json", methods=['GET', 'POST'])
 def post_system_w5json():
     if request.method == "POST":
-        r = requests.get(url=current_app.config["update_path"] + "/w5.json", timeout=30)
-        return Response.re(data=r.json())
+        w5_data = get_w5_json()
+        return Response.re(data=w5_data)
 
 
 def make_api_key():
@@ -130,7 +140,7 @@ def init_key():
 
 def init_timer():
     def setting():
-        result = redis.set("manage_timer_lock", 1, nx=True)
+        result = redis.set("manage_timer_lock", 1, nx=True, ex=30)
         if result:
             manage_timer = ManageTimer()
             manage_timer.start()

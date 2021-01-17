@@ -135,7 +135,9 @@ def get_workflow_detail():
             'type_id',
             'remarks',
             'local_var_data',
-            'status'
+            'status',
+            'update_time',
+            'create_time'
         ).where("uuid", uuid).first()
 
         return Response.re(data=workflow_info.serialize())
@@ -240,6 +242,17 @@ def post_workflow_import_url():
             return Response.re(err=ErrImportUrl)
 
 
+@r.route("/get/workflow/statistics", methods=['GET', 'POST'])
+def post_workflow_statistics():
+    if request.method == "POST":
+        url = request.json.get("url", "")
+        try:
+            r = requests.get(url=url, timeout=10)
+            return Response.re(data={"data": r.json()})
+        except:
+            return Response.re(err=ErrImportUrl)
+
+
 @ws.route('/echo')
 def echo_socket(s):
     while not s.closed:
@@ -254,3 +267,181 @@ def echo_socket(s):
             elif method == "run":
                 uuid = req_data["data"]["uuid"]
                 auto_execute(uuid, s=s)
+
+
+def get_workflow_logs(uuid):
+    logs_list = Logs.join(
+        Workflow.__table__,
+        Logs.__table__ + '.uuid',
+        '=',
+        Workflow.__table__ + '.uuid'
+    ).select(
+        Logs.__table__ + '.id',
+        Logs.__table__ + '.only_id',
+        Logs.__table__ + '.uuid',
+        Logs.__table__ + ".app_name",
+        Logs.__table__ + '.result',
+        Logs.__table__ + '.create_time',
+        Logs.__table__ + '.status',
+        Logs.__table__ + '.args',
+        Workflow.__table__ + '.name'
+    ).where(
+        Workflow.__table__ + '.uuid',
+        uuid
+    ).order_by(
+        Workflow.__table__ + '.id',
+        'desc'
+    ).limit(100).get()
+
+    return logs_list
+
+
+@r.route("/get/workflow/logs", methods=['GET', 'POST'])
+def get_workflow_logs_info():
+    if request.method == "POST":
+        uuid = request.json.get("uuid", "")
+        logs_list = get_workflow_logs(uuid)
+        return Response.re(data=logs_list.serialize())
+
+
+def get_workflow_sums(uuid):
+    if redis.exists(uuid + "&&exec_sum") == 1:
+        exec_sum = redis.get(uuid + "&&exec_sum")
+    else:
+        exec_sum = 0
+
+    return exec_sum
+
+
+@r.route("/get/workflow/sums", methods=['GET', 'POST'])
+def get_workflow_sums_info():
+    if request.method == "POST":
+        uuid = request.json.get("uuid", "")
+        exec_sum = get_workflow_sums(uuid)
+
+        data = {
+            "exec_sum": exec_sum
+        }
+
+        return Response.re(data=data)
+
+
+def get_workflow_success_fail(uuid):
+    sql1 = '''
+    SELECT
+        COUNT(1) as x 
+    FROM
+        w5_logs 
+    WHERE
+        uuid = "{uuid}" 
+    GROUP BY
+        only_id
+    '''.format(uuid=uuid)
+
+    sql2 = '''
+    SELECT
+        COUNT(1) as x 
+    FROM
+        w5_logs 
+    WHERE
+        `status` != 0 
+        AND uuid = "{uuid}"
+    GROUP BY
+        only_id
+    '''.format(uuid=uuid)
+
+    r1 = db.select(sql1)
+    r2 = db.select(sql2)
+
+    return len(r1), len(r1) - len(r2), len(r2)
+
+
+@r.route("/get/workflow/workflow", methods=['GET', 'POST'])
+def get_workflow_workflow():
+    if request.method == "POST":
+        uuid = request.json.get("uuid", "")
+        sum, success_sum, fail_sum = get_workflow_success_fail(uuid)
+
+        result = [
+            {
+                "name": "成功",
+                "sum": success_sum
+            },
+            {
+                "name": "失败",
+                "sum": fail_sum
+            }
+        ]
+
+        return Response.re(data=result)
+
+
+def get_workflow_exec(uuid):
+    sql = '''
+        SELECT
+            DATE_FORMAT( create_time, '%%m-%%d#%%H' ) AS time,
+            count(id) AS value 
+        FROM
+            {logs} 
+        WHERE
+            DATE( create_time ) > DATE_SUB( CURDATE(), INTERVAL 1 DAY ) 
+        AND uuid="{uuid}"
+        GROUP BY
+            time;
+        '''.format(
+        logs=Logs.__table__,
+        uuid=uuid
+    )
+
+    exec_data = db.select(sql)
+
+    time_data = {
+        "00": 0,
+        "01": 0,
+        "02": 0,
+        "03": 0,
+        "04": 0,
+        "05": 0,
+        "06": 0,
+        "07": 0,
+        "08": 0,
+        "09": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+        "13": 0,
+        "14": 0,
+        "15": 0,
+        "16": 0,
+        "17": 0,
+        "18": 0,
+        "19": 0,
+        "20": 0,
+        "21": 0,
+        "22": 0,
+        "23": 0
+    }
+
+    for t in exec_data:
+        arr = str(t.time).split("#")
+        time_data[arr[1]] = t.value
+
+    result = []
+
+    for t in time_data:
+        data = {
+            "time": t,
+            "value": time_data[t]
+        }
+
+        result.append(data)
+
+    return result
+
+
+@r.route("/get/workflow/exec", methods=['GET', 'POST'])
+def get_workflow_exec_info():
+    if request.method == "POST":
+        uuid = request.json.get("uuid", "")
+        result = get_workflow_exec(uuid)
+        return Response.re(data=result)

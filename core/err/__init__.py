@@ -103,12 +103,12 @@ class ErrWebhookUUIDNot(object):
 
 class ErrWebhookkey(object):
     errcode = 9017
-    errmsg = 'WebHook kEY 不能为空'
+    errmsg = 'API kEY 不能为空'
 
 
 class ErrWebhookKeyNot(object):
     errcode = 9018
-    errmsg = 'WebHook KEY 不正确'
+    errmsg = 'API KEY 不正确'
 
 
 class ErrWebhookStatus(object):
@@ -129,3 +129,18 @@ class ErrImportUrl(object):
 class ErrIsNotPlayBook(object):
     errcode = 9023
     errmsg = '剧本不存在'
+
+
+class ErrUploadZip(object):
+    errcode = 9024
+    errmsg = '上传文件非 ZIP 压缩文件'
+
+
+class ErrUploadZipR(object):
+    errcode = 9025
+    errmsg = 'APP 格式不正确 或 压缩文件损坏'
+
+
+class ErrUploadAppExist(object):
+    errcode = 9026
+    errmsg = 'APP 已经存在'

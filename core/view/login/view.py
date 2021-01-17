@@ -23,7 +23,7 @@ def login():
 
             token = Random.make_token(string=account)
 
-            redis.set(token, str(user.id), ex=60 * 60 * 12 * 7)
+            redis.set(token, str(user.id), ex=60 * 60 * 24 * 7)
 
             Users.where('id', user.id).update(
                 {
