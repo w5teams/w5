@@ -1,0 +1,28 @@
+{
+  "identification": "w5soar",
+  "is_public": true,
+  "name": "飞书通知",
+  "version": "0.1",
+  "description": "飞书消息通知",
+  "type": "消息通知",
+  "action": [
+    {
+      "name": "飞书通知",
+      "func": "send"
+    }
+  ],
+  "args": {
+    "send": [
+      {
+        "key": "hook_uuid",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "msg",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}

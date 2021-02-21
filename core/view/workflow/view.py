@@ -373,7 +373,17 @@ def get_workflow_workflow():
             }
         ]
 
-        return Response.re(data=result)
+        if redis.exists(uuid + "&&exec_sum") == 1:
+            exec_sum = redis.get(uuid + "&&exec_sum")
+        else:
+            exec_sum = 0
+
+        data = {
+            "result": result,
+            "exec_sum": exec_sum
+        }
+
+        return Response.re(data=data)
 
 
 def get_workflow_exec(uuid):

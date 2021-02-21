@@ -52,6 +52,8 @@ def post_system_del():
             Variablen.where("id", "!=", "0").delete()
         elif type == 4:
             redis.flushdb()
+        elif type == 5:
+            Report.where("id", "!=", "0").delete()
 
         return Response.re()
 

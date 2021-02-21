@@ -1,0 +1,49 @@
+{
+  "identification": "w5soar",
+  "is_public": true,
+  "name": "ES 查询",
+  "version": "0.1",
+  "description": "查询ES数据",
+  "type": "数据库",
+  "action": [
+    {
+      "name": "查询数据",
+      "func": "query"
+    }
+  ],
+  "args": {
+    "query": [
+      {
+        "key": "host",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "port",
+        "type": "number",
+        "required": true,
+        "default": 9200
+      },
+      {
+        "key": "index",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "body",
+        "type": "textarea",
+        "required": true
+      },
+      {
+        "key": "account",
+        "type": "text",
+        "required": false
+      },
+      {
+        "key": "password",
+        "type": "text",
+        "required": false
+      }
+    ]
+  }
+}

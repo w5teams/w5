@@ -11,7 +11,7 @@ from flask_sockets import Sockets
 from core.view import Decorator
 from flask import (Flask, send_from_directory)
 
-version = "0.3.1"
+version = "0.3.2"
 
 db = Orator()
 redis = FlaskRedis()
@@ -104,10 +104,16 @@ def init_config(app):
             }
         }
 
-    redis_host = cf.get("redis", "host")
-    redis_port = cf.get("redis", "port")
-    redis_database = cf.get("redis", "database")
-    redis_password = cf.get("redis", "password")
+    if os.getenv('REDIS_HOST'):
+        redis_host = os.getenv('REDIS_HOST')
+        redis_port = os.getenv('REDIS_PORT')
+        redis_database = os.getenv('REDIS_DATABASE')
+        redis_password = os.getenv('REDIS_PASSWORD')
+    else:
+        redis_host = cf.get("redis", "host")
+        redis_port = cf.get("redis", "port")
+        redis_database = cf.get("redis", "database")
+        redis_password = cf.get("redis", "password")
 
     if str(redis_password) == "":
         app.config['REDIS_URL'] = "redis://{host}:{port}/{db}".format(
