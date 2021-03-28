@@ -79,27 +79,14 @@ def check_update():
     else:
         data["is_w5"] = False
 
-    if VersionUtil.compare(str(w5_data["apps"]["version"]), version_info[1].version) == ">":
-        data["is_apps"] = True
-        data["apps"] = w5_data["apps"]
-    else:
-        data["is_apps"] = False
-
     return data
 
 
-def update_version(w5_version, apps_version):
+def update_version(w5_version):
     with db.transaction():
         Version.where('name', "w5").update(
             {
                 "version": w5_version,
-                "update_time": Time.get_date_time()
-            }
-        )
-
-        Version.where('name', "apps").update(
-            {
-                "version": apps_version,
                 "update_time": Time.get_date_time()
             }
         )

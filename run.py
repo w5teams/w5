@@ -22,7 +22,7 @@ def w5_info(**kwargs):
     print(" ##@$%|||||||||||!`              :%@#@")
     print(" ###@&$||||||||!`               !&###@")
     print(" #####@&&%||||:.             `%&#####@")
-    print(" ########&&&%:   W5 SOAR  '$&@#######@  v{version}".format(version="0.3.2"))
+    print(" ########&&&%:   W5 SOAR  '$&@#######@  v{version}".format(version="0.3.3"))
     print("=============================================")
     print("* Web : https://w5.io")
     print("* Github : https://github.com/w5hub/w5")

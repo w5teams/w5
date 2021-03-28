@@ -11,7 +11,7 @@ from flask_sockets import Sockets
 from core.view import Decorator
 from flask import (Flask, send_from_directory)
 
-version = "0.3.2"
+version = "0.3.3"
 
 db = Orator()
 redis = FlaskRedis()
@@ -164,11 +164,10 @@ def init_web_sockets(app):
 
 
 def init_w5(app):
-    with open(app.config['apps_path'] + '/version.txt', 'r') as f:
-        from core.view.system.view import update_version, init_key, init_timer
-        update_version(w5_version=version, apps_version=f.read())
-        init_key()
-        init_timer()
+    from core.view.system.view import update_version, init_key, init_timer
+    update_version(w5_version=version)
+    init_key()
+    init_timer()
 
 
 def init_app():

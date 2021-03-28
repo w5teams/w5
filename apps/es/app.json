@@ -8,11 +8,11 @@
   "action": [
     {
       "name": "查询数据",
-      "func": "query"
+      "func": "scan"
     }
   ],
   "args": {
-    "query": [
+    "scan": [
       {
         "key": "host",
         "type": "text",
