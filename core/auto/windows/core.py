@@ -616,7 +616,10 @@ class Auto(object):
     async def execute(self, app_uuid, app_dir=None, data=None):
 
         args_data = copy.deepcopy(data)
-        args_data["app_dir"] = app_dir
+
+        if app_dir:
+            args_data["app_dir"] = app_dir
+            
         args_data_json_x = json.dumps(args_data)
 
         if self.input_app == app_uuid or self.webhook_app == app_uuid:
