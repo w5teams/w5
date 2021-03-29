@@ -619,7 +619,7 @@ class Auto(object):
 
         if app_dir:
             args_data["app_dir"] = app_dir
-            
+
         args_data_json_x = json.dumps(args_data)
 
         if self.input_app == app_uuid or self.webhook_app == app_uuid:
