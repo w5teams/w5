@@ -7,10 +7,10 @@ from email.mime.text import MIMEText
 from email.header import Header
 
 
-async def send(host, port, user, passwd, sender, to, title, type, text):
-    logger.info("[E-Mail] APP执行参数为: {host} {port} {user} {passwd} {sender} {to} {title} {type} {text}", host=host,
+async def send(host, port, user, passwd, encrypt, sender, to, title, type, text):
+    logger.info("[E-Mail] APP执行参数为: {host} {port} {user} {passwd} {encrypt} {sender} {to} {title} {type} {text}", host=host,
                 port=port, user=user, passwd=passwd, sender=sender, to=to,
-                title=title, type=type, text=text)
+                title=title, type=type, text=text, encrypt=encrypt)
 
     if type == "html":
         message = MIMEText(text, 'html', 'utf-8')
@@ -21,8 +21,14 @@ async def send(host, port, user, passwd, sender, to, title, type, text):
     message['From'] = sender
 
     try:
-        w5_smtp = smtplib.SMTP()
-        w5_smtp.connect(host, int(port))
+        if encrypt == 'none':
+            w5_smtp = smtplib.SMTP()
+            w5_smtp.connect(host, int(port))
+        elif encrypt == 'tsl':
+            w5_smtp = smtplib.SMTP(host, int(port))
+            w5_smtp.starttls()
+        else:
+            w5_smtp = smtplib.SMTP_SSL(host, int(port))
         w5_smtp.login(user, passwd)
         w5_smtp.sendmail(sender, str(to).split(","), message.as_string())
         return {"status": 0, "result": "发送成功"}

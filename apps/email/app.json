@@ -35,6 +35,17 @@
         "required": true
       },
       {
+        "key": "encrypt",
+        "type": "select",
+        "required": true,
+        "default": "none",
+        "data": [
+          "none",
+          "tsl",
+          "ssl"
+        ]
+      },
+      {
         "key": "sender",
         "type": "text",
         "required": true
