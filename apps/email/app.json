@@ -38,7 +38,7 @@
         "key": "encrypt",
         "type": "select",
         "required": true,
-        "default": "text",
+        "default": "none",
         "data": [
           "none",
           "tsl",
