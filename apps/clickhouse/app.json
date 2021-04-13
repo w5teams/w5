@@ -1,0 +1,44 @@
+{
+  "identification": "w5soar",
+  "is_public": true,
+  "name": "Clickhouse",
+  "version": "0.1",
+  "description": "一个高性能的列数据库",
+  "type": "数据引擎",
+  "action": [
+    {
+      "name": "查询",
+      "func": "query"
+    }
+  ],
+  "args": {
+    "query": [
+      {
+        "key": "url",
+        "type": "text",
+        "required": true,
+        "default": "localhost"
+      },
+      {
+        "key": "user",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "passwd",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "db",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "sql",
+        "type": "textarea",
+        "required": true
+      }
+    ]
+  }
+}
