@@ -1,0 +1,38 @@
+{
+  "identification": "w5soar",
+  "is_public": true,
+  "name": "Splunk 查询",
+  "version": "0.1",
+  "description": "查询Splunk数据",
+  "type": "数据库",
+  "action": [
+    {
+      "name": "查询数据",
+      "func": "scan"
+    }
+  ],
+  "args": {
+    "scan": [
+      {
+        "key": "domain",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "user",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "passwd",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "body",
+        "type": "textarea",
+        "required": true
+      }
+    ]
+  }
+}
