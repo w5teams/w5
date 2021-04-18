@@ -17,7 +17,9 @@ from core.utils.file import File
 from core.utils.randoms import Random
 from apscheduler.schedulers.gevent import GeventScheduler
 from apscheduler.triggers.cron import CronTrigger
+from apscheduler.jobstores.base import JobLookupError
 
+max_instances = 5
 w5_apps_path = os.getcwd() + "/apps"
 
 
@@ -35,7 +37,12 @@ class W5Timer(object):
         return W5Timer._instance
 
     def create_scheduler(self):
-        self.scheduler = GeventScheduler()
+        self.scheduler = GeventScheduler(
+            job_defaults={
+                'coalesce': False,
+                'max_instances': max_instances
+            }
+        )
 
     def start(self):
         self.scheduler.start()
@@ -56,7 +63,10 @@ class W5Timer(object):
         self.scheduler.resume()
 
     def remove_job(self, uuid):
-        self.scheduler.remove_job(uuid)
+        try:
+            self.scheduler.remove_job(uuid)
+        except JobLookupError:
+            pass
 
     def get_jobs(self):
         return self.scheduler.get_jobs()
@@ -784,6 +794,13 @@ class Auto(object):
                         return str(r["label"]), r["source"], r[
                             "target"], edge_info_switch, str(edge_info_action), str(edge_info_if_else)
 
+    async def decr_sum(self, uuid):
+        if int(redis.decr("exec_sum")) < 0:
+            redis.set("exec_sum", "0")
+
+        if int(redis.decr(uuid + "&&exec_sum")) < 0:
+            redis.set(uuid + "&&exec_sum", "0")
+
     async def run(self, uuid):
         redis.incr("exec_sum")
         redis.incr(uuid + "&&exec_sum")
@@ -839,6 +856,8 @@ class Auto(object):
                 except Exception as e:
                     await self.add_execute_logs(uuid=uuid, app_uuid="", app_name="", result="当前剧本不具有可执行条件", status=1,
                                                 html="<span>当前剧本不具有可执行条件</span>")
+
+                    await self.decr_sum(uuid=uuid)
                     is_while = False
                     break
 
@@ -899,14 +918,9 @@ class Auto(object):
                     await self.add_execute_logs(uuid=uuid, app_uuid=self.end_app, app_name="结束", result="剧本执行结束",
                                                 status=0, html="<span>剧本执行结束</span>")
                     await self.add_report()
+                    await self.decr_sum(uuid=uuid)
+
                     is_while = False
-
-                    if int(redis.decr("exec_sum")) < 0:
-                        redis.set("exec_sum", "0")
-
-                    if int(redis.decr(uuid + "&&exec_sum")) < 0:
-                        redis.set(uuid + "&&exec_sum", "0")
-
                     break
 
 

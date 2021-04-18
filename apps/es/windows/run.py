@@ -19,8 +19,7 @@ async def scan(host, port, index, body, account, password):
         else:
             es = Elasticsearch(hosts=host, port=port)
 
-
         result = es.search(index=index, body=body)
     except Exception as e:
-        return {"status": 2, "result": "ES连接失败:"+str(e)}
+        return {"status": 2, "result": "ES连接失败:" + str(e)}
     return {"status": 0, "result": str(result)}

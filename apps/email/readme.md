@@ -14,6 +14,7 @@
 | **port**  | number | `是` | 端口 |
 | **user**  | text | `是` | 登录用户|
 | **passwd**  | text | `是` | 登录密码，目前很多提供商是填写授权码|
+| **encrypt**  | select | `是` | 加密协议|
 | **sender**  | text | `是` | 发送人，一般和 {{user}} 一致 |
 | **to**  | text | `是` | 接收人，多个英文逗号|
 | **title**  | text | `是` | 邮件标题|

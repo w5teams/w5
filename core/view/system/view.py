@@ -60,10 +60,10 @@ def post_system_del():
 
 def get_w5_json():
     try:
-        result = requests.get(url=current_app.config["update_path"] + "/w5.json", timeout=30)
-        return result.json()
+        result = requests.get(url=current_app.config["update_path"] + "/w5.json", timeout=5)
+        return result.json()["w5"]
     except Exception as e:
-        print(e)
+        return "fail"
 
 
 def check_update():
@@ -73,9 +73,14 @@ def check_update():
 
     data = {}
 
-    if VersionUtil.compare(str(w5_data["w5"]["version"]), version_info[0].version) == ">":
+    if w5_data == "fail":
         data["is_w5"] = True
-        data["w5"] = w5_data["w5"]
+        data["w5"] = w5_data
+        return data
+
+    if VersionUtil.compare(str(w5_data["version"]), version_info[0].version) == ">":
+        data["is_w5"] = True
+        data["w5"] = w5_data
     else:
         data["is_w5"] = False
 
