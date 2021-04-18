@@ -1,6 +1,6 @@
 ## APP 说明
 
-> 查询QQ头像和昵称
+> QQ域名红名检测
 
 ## 动作列表
 
@@ -15,6 +15,5 @@
 **返回值：**
 
 ```
-wx	String	域名在微信中状态(danger 危险, unknown 未知, safe 安全)
-qq	String	域名在QQ中状态(danger 危险, unknown 未知, safe 安全)
+红名数据
 ```

@@ -13,7 +13,8 @@ async def query(url, user, passwd, db, sql):
         logger.info("[Clickhouse] 导入 aiochclient 模块失败, 请输入命令 pip install aiochclient")
         return {"status": 2, "result": "缺少 aoichclient 模块，请 pip install aiochclient 安装"}
 
-    logger.info("[Clickhouse] APP执行参数为：{url} {database} {user} {passwd} {sql}", url=url, user=user, passwd=passwd, database=db, sql=sql)
+    logger.info("[Clickhouse] APP执行参数为：{url} {database} {user} {passwd} {sql}", url=url, user=user, passwd=passwd,
+                database=db, sql=sql)
 
     try:
         async with aiohttp.ClientSession() as s:
