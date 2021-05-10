@@ -22,4 +22,4 @@ async def scan(Target, Ports, Protocol):
 
     nm.scan(Target, ports=Ports, arguments=args)
 
-    return {"status": 0, "result": str(nm.analyse_nmap_xml_scan()['scan'])}
+    return {"status": 0, "result": nm.analyse_nmap_xml_scan()['scan']}

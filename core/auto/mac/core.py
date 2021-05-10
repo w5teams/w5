@@ -2,7 +2,6 @@
 # encoding:utf-8
 # cython: language_level=3
 import re
-import os
 import copy
 import json
 import asyncio
@@ -11,16 +10,14 @@ import threading
 from loguru import logger
 from core import redis
 from rpyc import Service
-from core.model import Logs, Workflow, Variablen, Report, Timer
 from core.utils.times import Time
 from core.utils.file import File
 from core.utils.randoms import Random
+from core import (lose_time, max_instances, w5_apps_path)
+from core.model import Logs, Workflow, Variablen, Report, Timer
 from apscheduler.schedulers.gevent import GeventScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.jobstores.base import JobLookupError
-
-max_instances = 5
-w5_apps_path = os.getcwd() + "/apps"
 
 
 class W5Timer(object):
@@ -477,6 +474,20 @@ class Auto(object):
         self.webhook_app = None
         self.timer_app = None
 
+    def is_json(self, json_text):
+        try:
+            int(json_text)
+            return False
+        except Exception:
+            try:
+                json.loads(json_text)
+            except ValueError:
+                return False
+            except TypeError:
+                return True
+
+            return True
+
     async def is_identification(self, app_dir):
         app_json = File.find_app_json(path=w5_apps_path, app_dir=app_dir)
         app_json_load = json.loads(app_json)
@@ -506,13 +517,12 @@ class Auto(object):
 
                 for x in controller_var:
                     key = x + "&&" + self.only_id + "&&text"
-                    redis.set(key, controller_var[x]["text"], ex=60 * 1)
+                    redis.set(key, controller_var[x]["text"], ex=lose_time)
 
         if local_var == "none" or str(local_var).replace(" ", "") == "" or str(local_var).replace(" ", "") == "[]":
             pass
         else:
             local_var = json.loads(local_var)
-            # 局部变量
             local_var_data = {}
 
             for x in local_var:
@@ -534,7 +544,7 @@ class Auto(object):
     async def analysis_var(self, text):
         global_var = re.findall(r'@\{\w*\}', text)
         local_var = re.findall(r'@\[\w*\]', text)
-        app_var = re.findall(r'@\(\w*-\w*-\w*-\w*-\w*.\w*\)', text)
+        app_var = re.findall(r'@\(\w*-\w*-\w*-\w*-\w*.\w.*\)', text)
 
         if len(local_var) > 0:
             if self.local_var_data is None:
@@ -570,10 +580,45 @@ class Auto(object):
             try:
                 redis_key = app_key[0] + "&&" + self.only_id + "&&" + str(app_key[1])
                 app_value = redis.get(redis_key).decode()
-            except:
+
+                if len(app_key) > 2:
+                    is_json = self.is_json(json_text=app_value)
+
+                    if is_json is False:
+                        return 1, "非 JSON 格式变量"
+
+                    try:
+                        app_value = json.loads(json.loads(app_value))
+                    except:
+                        app_value = json.loads(app_value)
+
+                    key_all = "app_value"
+                    key_front = "['"
+                    key_after = "']"
+                    key_number_front = "["
+                    key_number_after = "]"
+
+                    json_key = ""
+
+                    for k in app_key[2:]:
+                        try:
+                            int(k)
+                            key_all += key_number_front + k + key_number_after
+                            json_key = json_key + "," + str(k)
+                        except ValueError:
+                            k = str(k).replace("!!!", "")
+                            key_all += key_front + k + key_after
+                            json_key = json_key + "," + str(k)
+                    try:
+                        app_value = eval(key_all)
+                    except IndexError:
+                        return 1, "未找到 JSON Index : {key}".format(key=json_key[1:])
+                    except KeyError:
+                        return 1, "未找到 JSON KEY : {key}".format(key=json_key[1:])
+            except Exception as e:
                 return 1, "未找到 APP 变量"
             else:
-                text = text.replace(r, app_value)
+                text = text.replace(r, str(app_value))
 
         return 0, text
 
@@ -672,7 +717,7 @@ class Auto(object):
                 var_status, text = await self.analysis_var(text=str(data[key]))
 
                 redis_key = app_uuid + "&&" + self.only_id + "&&" + key
-                redis.set(redis_key, text, ex=60 * 1)
+                redis.set(redis_key, text, ex=lose_time)
 
                 if var_status == 0:
                     data[key] = text
@@ -700,7 +745,7 @@ class Auto(object):
         else:
             html_data = result_data["html"]
 
-        return {"status": result_data["status"], "result": str(result_data["result"]), "args": args_data_json,
+        return {"status": result_data["status"], "result": result_data["result"], "args": args_data_json,
                 "html": html_data}
 
     async def get_app_data(self, uuid, app_uuid, app_info=None):
@@ -711,9 +756,15 @@ class Auto(object):
             if redis.exists(key_result) == 0:
                 result_data = await self.execute(app_uuid=app_uuid)
 
-                result = str(result_data["result"])
-                redis.set(key_result, result, ex=60 * 1)
-                redis.set(key_status, result_data["status"], ex=60 * 1)
+                is_json = self.is_json(json_text=result_data["result"])
+
+                if is_json:
+                    result = json.dumps(result_data["result"])
+                else:
+                    result = str(result_data["result"])
+
+                redis.set(key_result, result, ex=lose_time)
+                redis.set(key_status, result_data["status"], ex=lose_time)
 
                 if self.input_app == app_uuid:
                     await self.add_execute_logs(uuid=uuid, app_uuid=app_uuid, app_name="用户输入",
@@ -735,9 +786,15 @@ class Auto(object):
                 result_data = await self.execute(app_uuid=app_uuid, app_dir=app_info["app_dir"],
                                                  data=app_info["data"])
 
-                result = str(result_data["result"])
-                redis.set(key_result, result, ex=60 * 1)
-                redis.set(key_status, result_data["status"], ex=60 * 1)
+                is_json = self.is_json(json_text=result_data["result"])
+
+                if is_json:
+                    result = json.dumps(result_data["result"])
+                else:
+                    result = str(result_data["result"])
+
+                redis.set(key_result, result, ex=lose_time)
+                redis.set(key_status, result_data["status"], ex=lose_time)
 
                 if str(result_data["html"]) == "":
                     html_data = result
@@ -843,7 +900,6 @@ class Auto(object):
 
             await self.add_execute_logs(uuid=uuid, app_uuid=self.start_app, app_name="开始", result="剧本开始执行", status=0,
                                         html="<span>剧本开始执行</span>")
-
             is_while = True
 
             while is_while:
@@ -852,10 +908,13 @@ class Auto(object):
                         edges=self.flow_json["edges"],
                         next_app=target_app
                     )
-
                 except Exception as e:
                     await self.add_execute_logs(uuid=uuid, app_uuid="", app_name="", result="当前剧本不具有可执行条件", status=1,
                                                 html="<span>当前剧本不具有可执行条件</span>")
+
+                    await self.add_execute_logs(uuid=uuid, app_uuid=self.end_app, app_name="结束",
+                                                result="剧本执行结束",
+                                                status=0, html="<span>剧本执行结束</span>")
 
                     await self.decr_sum(uuid=uuid)
                     is_while = False
@@ -864,9 +923,9 @@ class Auto(object):
                 key = target_app + "&&" + self.only_id + "&&sum"
                 if redis.exists(key) == 1:
                     sum = redis.get(key)
-                    redis.set(key, int(sum) + 1, ex=60 * 1)
+                    redis.set(key, int(sum) + 1, ex=lose_time)
                 else:
-                    redis.set(key, 1, ex=60 * 1)
+                    redis.set(key, 1, ex=lose_time)
 
                 if self.input_app == source_app or self.webhook_app == source_app or self.timer_app == source_app:
                     is_status, if_else_result = await self.get_app_data(uuid=uuid, app_uuid=source_app)
@@ -875,7 +934,7 @@ class Auto(object):
                     is_status, if_else_result = await self.get_app_data(uuid=uuid, app_uuid=source_app,
                                                                         app_info=source_info)
 
-                if is_status == 0:
+                if str(is_status) == "0":
                     if is_switch:
                         if str(edge_action) == "1":
                             is_arr = re.findall(r'\[\w*.+\]', edge_if_else)
@@ -886,7 +945,7 @@ class Auto(object):
                                 else:
                                     pass
                             else:
-                                if edge_if_else == if_else_result:
+                                if str(edge_if_else) == str(if_else_result):
                                     target_app = next_app
                                 else:
                                     pass
@@ -899,7 +958,7 @@ class Auto(object):
                                 else:
                                     pass
                             else:
-                                if edge_if_else != if_else_result:
+                                if str(edge_if_else) != str(if_else_result):
                                     target_app = next_app
                                 else:
                                     pass
@@ -909,17 +968,129 @@ class Auto(object):
                                 target_app = next_app
                             else:
                                 pass
+                        elif str(edge_action) == "4":
+                            is_json_arr = re.findall(r'\{\w.*\}!=\w.*', edge_if_else)
+                            is_json_arr_equal = re.findall(r'\{\w.*\}=\w.*', edge_if_else)
+
+                            if len(is_json_arr) == 1:
+                                is_equal = False
+                                is_json_arr = is_json_arr[0].split("!=")
+                                json_key = str(is_json_arr[0])
+                                json_val = str(is_json_arr[1])
+                            else:
+                                is_equal = True
+                                is_json_arr = is_json_arr_equal[0].split("=")
+                                json_key = str(is_json_arr[0])
+                                json_val = str(is_json_arr[1])
+
+                            if len(is_json_arr) > 0:
+                                edge_if_else_key = json_key.replace("{", "").replace("}", "")
+                                edge_if_else_arr = edge_if_else_key.split(".")
+
+                                is_json = self.is_json(json_text=if_else_result)
+
+                                if is_json is False:
+                                    await self.add_execute_logs(
+                                        uuid=uuid, app_uuid="", app_name="",
+                                        result="非 JSON 格式变量",
+                                        status=1,
+                                        html="<span>非 JSON 格式变量</span>")
+
+                                    await self.add_execute_logs(uuid=uuid, app_uuid=self.end_app, app_name="结束",
+                                                                result="剧本执行结束",
+                                                                status=0, html="<span>剧本执行结束</span>")
+
+                                    await self.decr_sum(uuid=uuid)
+                                    is_while = False
+                                    break
+
+                                try:
+                                    if_else_result = json.loads(json.loads(if_else_result))
+                                except:
+                                    if_else_result = json.loads(if_else_result)
+
+                                key_all = "if_else_result"
+                                key_front = "['"
+                                key_after = "']"
+                                key_number_front = "["
+                                key_number_after = "]"
+
+                                for k in edge_if_else_arr:
+                                    try:
+                                        int(k)
+                                        key_all += key_number_front + k + key_number_after
+                                    except ValueError:
+                                        k = str(k).replace("!!!", "")
+                                        key_all += key_front + k + key_after
+                                try:
+                                    if_else_result = eval(key_all)
+                                    if is_equal:
+                                        if str(if_else_result) == json_val:
+                                            target_app = next_app
+                                        else:
+                                            pass
+                                    else:
+                                        if str(if_else_result) != json_val:
+                                            target_app = next_app
+                                        else:
+                                            pass
+                                except IndexError:
+                                    await self.add_execute_logs(
+                                        uuid=uuid, app_uuid="", app_name="",
+                                        result="未找到 JSON Index : {key}".format(key=edge_if_else_key),
+                                        status=1,
+                                        html="<span>未找到 JSON Index : {key}</span>".format(key=edge_if_else_key))
+
+                                    await self.add_execute_logs(uuid=uuid, app_uuid=self.end_app, app_name="结束",
+                                                                result="剧本执行结束",
+                                                                status=0, html="<span>剧本执行结束</span>")
+
+                                    await self.decr_sum(uuid=uuid)
+                                    is_while = False
+                                    break
+                                except KeyError:
+                                    await self.add_execute_logs(
+                                        uuid=uuid, app_uuid="", app_name="",
+                                        result="未找到 JSON KEY : {key}".format(key=edge_if_else_key),
+                                        status=1,
+                                        html="<span>未找到 JSON KEY : {key}</span>".format(key=edge_if_else_key))
+
+                                    await self.add_execute_logs(uuid=uuid, app_uuid=self.end_app, app_name="结束",
+                                                                result="剧本执行结束",
+                                                                status=0, html="<span>剧本执行结束</span>")
+
+                                    await self.decr_sum(uuid=uuid)
+                                    is_while = False
+                                    break
+                                except TypeError:
+                                    await self.add_execute_logs(
+                                        uuid=uuid, app_uuid="", app_name="",
+                                        result="JSON 格式不存在 : {key}".format(key=edge_if_else_key),
+                                        status=1,
+                                        html="<span>JSON 格式不存在 : {key}</span>".format(key=edge_if_else_key))
+
+                                    await self.add_execute_logs(uuid=uuid, app_uuid=self.end_app, app_name="结束",
+                                                                result="剧本执行结束",
+                                                                status=0, html="<span>剧本执行结束</span>")
+
+                                    await self.decr_sum(uuid=uuid)
+                                    is_while = False
+                                    break
                     else:
                         target_app = next_app
                 else:
+                    await self.add_execute_logs(uuid=uuid, app_uuid=self.end_app, app_name="结束", result="剧本执行结束",
+                                                status=0, html="<span>剧本执行结束</span>")
+                    await self.decr_sum(uuid=uuid)
                     is_while = False
+                    break
 
                 if next_app == self.end_app:
                     await self.add_execute_logs(uuid=uuid, app_uuid=self.end_app, app_name="结束", result="剧本执行结束",
                                                 status=0, html="<span>剧本执行结束</span>")
                     await self.add_report()
                     await self.decr_sum(uuid=uuid)
-
+                    # redis.delete(*redis.keys(pattern='*{key}*'.format(key=self.only_id)))
                     is_while = False
                     break
 
@@ -929,16 +1100,26 @@ def auto_execute(uuid, s=None, controller_data=None, text=None, app_uuid=None):
         pass
     else:
         controller_data = json.loads(controller_data)
-        controller_data[app_uuid] = {"text": str(text)}
+
+        if Auto().is_json(text):
+            controller_data[app_uuid] = {"text": json.dumps(text)}
+        else:
+            controller_data[app_uuid] = {"text": str(text)}
+
         Workflow.where('uuid', uuid).update({
             'controller_data': json.dumps(controller_data),
             'update_time': Time.get_date_time()
         })
 
-    async def run():
-        await asyncio.gather(Auto(socket=s).run(uuid=uuid))
+    def thread_exec():
+        async def run():
+            await asyncio.gather(Auto(socket=s).run(uuid=uuid))
 
-    try:
-        asyncio.run(run())
-    except RuntimeError as e:
-        asyncio.gather(Auto(socket=s).run(uuid=uuid))
+        try:
+            asyncio.run(run())
+        except RuntimeError:
+            asyncio.gather(Auto(socket=s).run(uuid=uuid))
+
+    t = threading.Thread(target=thread_exec)
+    t.setDaemon(True)
+    t.start()

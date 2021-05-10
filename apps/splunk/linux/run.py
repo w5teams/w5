@@ -39,4 +39,4 @@ async def scan(domain, user, passwd, body):
     except Exception as e:
         return {"status": 2, "result": "Splunk查询失败:" + str(e)}
 
-    return {"status": 0, "result": str(result)}
+    return {"status": 0, "result": result}
