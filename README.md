@@ -50,6 +50,8 @@ https://github.com/w5teams/w5_web
 
 ## GVP 证书
 
+> W5 项目获得 2021年 最有价值的开源项目
+
 ![1](./images/gvp.png)
 
 ## 核心功能介绍
