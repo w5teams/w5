@@ -11,11 +11,15 @@ from flask_sockets import Sockets
 from core.view import Decorator
 from flask import (Flask, send_from_directory)
 
-version = "0.3.4"
+version = "0.4"
 
 db = Orator()
 redis = FlaskRedis()
 sockets = Sockets()
+
+lose_time = None
+max_instances = None
+w5_apps_path = None
 
 
 def init_route(app):
@@ -80,6 +84,11 @@ def init_config(app):
 
     cf = configparser.RawConfigParser()
     cf.read(app.config['project_path'] + '/config.ini')
+
+    global lose_time, max_instances, w5_apps_path
+    lose_time = cf.get("setting", "lose_time")
+    max_instances = cf.get("setting", "max_instances")
+    w5_apps_path = app.config['apps_path']
 
     if os.getenv('MYSQL_HOST'):
         app.config['ORATOR_DATABASES'] = {

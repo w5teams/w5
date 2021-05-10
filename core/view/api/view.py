@@ -37,7 +37,10 @@ def api_webhook():
             if str(workflow.status) == "1":
                 return Response.re(err=ErrWebhookStatus)
             else:
+                print(00000)
                 auto_execute(workflow.uuid, controller_data=workflow.controller_data, text=text, app_uuid=app_uuid)
+                print(2222)
+
         else:
             return Response.re(err=ErrWebhookUUIDNot)
 
