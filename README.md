@@ -48,6 +48,10 @@ https://github.com/w5teams/w5_web
 
 ![1](./images/jg.png)
 
+## GVP 证书
+
+![1](./images/gvp.png)
+
 ## 核心功能介绍
 
 - [x] 工作流编辑
