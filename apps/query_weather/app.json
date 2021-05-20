@@ -1,0 +1,23 @@
+{
+  "identification": "w5soar",
+  "is_public": false,
+  "name": "QuerryWeather",
+  "version": "0.1",
+  "description": "查询天气",
+  "type": "信息查询",
+  "action": [
+    {
+      "name": "查询天气",
+      "func": "query_weather"
+    }
+  ],
+  "args": {
+    "query_weather": [
+      {
+        "key": "city",
+        "type": "text",
+        "required": true
+      }
+    ]
+  }
+}
