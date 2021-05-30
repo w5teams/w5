@@ -7,6 +7,7 @@ import json
 import asyncio
 import platform
 import threading
+import importlib
 from loguru import logger
 from core import redis
 from rpyc import Service
@@ -704,7 +705,8 @@ class Auto(object):
             import_path = 'apps.' + str(app_dir) + '.mac.run'
 
         try:
-            data["app"] = __import__(import_path, fromlist=['*'])
+            data["app"] = importlib.import_module(import_path)
+            app_action = getattr(data["app"], data["action"])
         except Exception as e:
             return {"status": 1, "result": "请使用正确的应用", "args": args_data_json_x, "html": ""}
 
@@ -727,10 +729,12 @@ class Auto(object):
 
         args_data_json = json.dumps(args_data)
 
-        eval_action = "app.{action}({args})".format(action=data["action"], args=args[1:])
-
         try:
-            result_data = await eval(eval_action, data)
+            kwargs = {}
+            for arg in args[1:].split(","):
+                if arg in data:
+                    kwargs[arg] = data[arg]
+            result_data = await app_action(**kwargs)
         except TypeError as e:
             return {"status": 1, "result": "请勿使用非法应用", "args": args_data_json, "html": ""}
 
