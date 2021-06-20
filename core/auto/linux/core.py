@@ -545,7 +545,7 @@ class Auto(object):
     async def analysis_var(self, text):
         global_var = re.findall(r'@\{\w*\}', text)
         local_var = re.findall(r'@\[\w*\]', text)
-        app_var = re.findall(r'@\(\w*-\w*-\w*-\w*-\w*.\w.*\)', text)
+        app_var = re.findall(r'@\(\w*-\w*-\w*-\w*-\w*.\w.*?\)', text)
 
         if len(local_var) > 0:
             if self.local_var_data is None:
