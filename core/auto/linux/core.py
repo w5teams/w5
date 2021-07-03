@@ -545,7 +545,7 @@ class Auto(object):
     async def analysis_var(self, text):
         global_var = re.findall(r'@\{\w*\}', text)
         local_var = re.findall(r'@\[\w*\]', text)
-        app_var = re.findall(r'@\(\w*-\w*-\w*-\w*-\w*.\w.*\)', text)
+        app_var = re.findall(r'@\(\w*-\w*-\w*-\w*-\w*.\w.*?\)', text)
 
         if len(local_var) > 0:
             if self.local_var_data is None:
@@ -579,10 +579,11 @@ class Auto(object):
             app_key = str(r).replace("@(", "").replace(")", "").split(".")
 
             try:
-                redis_key = app_key[0] + "&&" + self.only_id + "&&" + str(app_key[1])
+                app_key_json = app_key[1].split("!>")
+                redis_key = app_key[0] + "&&" + self.only_id + "&&" + str(app_key_json[0])
                 app_value = redis.get(redis_key).decode()
 
-                if len(app_key) > 2:
+                if len(app_key_json) > 1:
                     is_json = self.is_json(json_text=app_value)
 
                     if is_json is False:
@@ -601,7 +602,7 @@ class Auto(object):
 
                     json_key = ""
 
-                    for k in app_key[2:]:
+                    for k in app_key_json[1:]:
                         try:
                             int(k)
                             key_all += key_number_front + k + key_number_after
@@ -989,7 +990,7 @@ class Auto(object):
 
                             if len(is_json_arr) > 0:
                                 edge_if_else_key = json_key.replace("{", "").replace("}", "")
-                                edge_if_else_arr = edge_if_else_key.split(".")
+                                edge_if_else_arr = edge_if_else_key.split("!>")
 
                                 is_json = self.is_json(json_text=if_else_result)
 

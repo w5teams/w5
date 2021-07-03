@@ -1,18 +1,18 @@
 {
   "identification": "w5soar",
   "is_public": true,
-  "name": "Hello Word",
+  "name": "Hello World",
   "version": "0.1",
-  "description": "W5 SOAR - Hello Word",
+  "description": "W5 SOAR - Hello World",
   "type": "基础应用",
   "action": [
     {
-      "name": "HelloWord",
-      "func": "hello_word"
+      "name": "HelloWorld",
+      "func": "hello_world"
     }
   ],
   "args": {
-    "hello_word": [
+    "hello_world": [
       {
         "key": "name",
         "type": "text",
