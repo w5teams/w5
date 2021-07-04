@@ -1,10 +1,10 @@
 ## APP 说明
 
-> W5 SOAR Hello Word
+> W5 SOAR Hello World
 
 ## 动作列表
 
-### HellWord
+### HellWorld
 
 **参数：**
 

@@ -61,11 +61,13 @@ def post_workflow_add():
         user_id = redis.get(token)
 
         if type == 0:
+            work_name = "未命名 " + Time.get_date_time()
+
             Workflow.insert({
                 'uuid': str(uuid),
                 "type_id": 1,
                 "user_id": user_id,
-                'name': "未命名",
+                'name': work_name,
                 'start_app': "",
                 'end_app': "",
                 'input_app': "",
