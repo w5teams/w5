@@ -8,6 +8,7 @@ import asyncio
 import platform
 import threading
 import importlib
+import time as ttime
 from loguru import logger
 from core import redis
 from rpyc import Service
@@ -863,7 +864,7 @@ class Auto(object):
         if int(redis.decr(uuid + "&&exec_sum")) < 0:
             redis.set(uuid + "&&exec_sum", "0")
 
-    async def run(self, uuid):
+    async def run(self, uuid,controller_data=None):
         redis.incr("exec_sum")
         redis.incr(uuid + "&&exec_sum")
 
@@ -884,6 +885,9 @@ class Auto(object):
         ).where(
             "uuid", uuid
         ).first()
+
+        if controller_data!=None:
+            workflow_info.controller_data=json.dumps(controller_data)
 
         if workflow_info:
             if str(workflow_info.status) == "1":
@@ -1111,20 +1115,17 @@ def auto_execute(uuid, s=None, controller_data=None, text=None, app_uuid=None):
         else:
             controller_data[app_uuid] = {"text": str(text)}
 
-        Workflow.where('uuid', uuid).update({
-            'controller_data': json.dumps(controller_data),
-            'update_time': Time.get_date_time()
-        })
 
     def thread_exec():
         async def run():
-            await asyncio.gather(Auto(socket=s).run(uuid=uuid))
+            await asyncio.gather(Auto(socket=s).run(uuid=uuid,controller_data=controller_data))
 
         try:
             asyncio.run(run())
         except RuntimeError:
-            asyncio.gather(Auto(socket=s).run(uuid=uuid))
-
+            asyncio.gather(Auto(socket=s).run(uuid=uuid,controller_data=controller_data))
+    while(threading.active_count()>1):
+        ttime.sleep(0.1)
     t = threading.Thread(target=thread_exec)
-    t.setDaemon(True)
+    t.setDaemon(False)
     t.start()
