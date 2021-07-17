@@ -8,6 +8,7 @@ import asyncio
 import platform
 import threading
 import importlib
+import time as ttime
 from loguru import logger
 from core import redis
 from rpyc import Service
@@ -545,7 +546,7 @@ class Auto(object):
     async def analysis_var(self, text):
         global_var = re.findall(r'@\{\w*\}', text)
         local_var = re.findall(r'@\[\w*\]', text)
-        app_var = re.findall(r'@\(\w*-\w*-\w*-\w*-\w*.\w.*\)', text)
+        app_var = re.findall(r'@\(\w*-\w*-\w*-\w*-\w*.\w.*?\)', text)
 
         if len(local_var) > 0:
             if self.local_var_data is None:
@@ -579,10 +580,11 @@ class Auto(object):
             app_key = str(r).replace("@(", "").replace(")", "").split(".")
 
             try:
-                redis_key = app_key[0] + "&&" + self.only_id + "&&" + str(app_key[1])
+                app_key_json = app_key[1].split("!>")
+                redis_key = app_key[0] + "&&" + self.only_id + "&&" + str(app_key_json[0])
                 app_value = redis.get(redis_key).decode()
 
-                if len(app_key) > 2:
+                if len(app_key_json) > 1:
                     is_json = self.is_json(json_text=app_value)
 
                     if is_json is False:
@@ -601,7 +603,7 @@ class Auto(object):
 
                     json_key = ""
 
-                    for k in app_key[2:]:
+                    for k in app_key_json[1:]:
                         try:
                             int(k)
                             key_all += key_number_front + k + key_number_after
@@ -862,7 +864,7 @@ class Auto(object):
         if int(redis.decr(uuid + "&&exec_sum")) < 0:
             redis.set(uuid + "&&exec_sum", "0")
 
-    async def run(self, uuid):
+    async def run(self, uuid,controller_data=None):
         redis.incr("exec_sum")
         redis.incr(uuid + "&&exec_sum")
 
@@ -883,6 +885,9 @@ class Auto(object):
         ).where(
             "uuid", uuid
         ).first()
+
+        if controller_data!=None:
+            workflow_info.controller_data=json.dumps(controller_data)
 
         if workflow_info:
             if str(workflow_info.status) == "1":
@@ -989,7 +994,7 @@ class Auto(object):
 
                             if len(is_json_arr) > 0:
                                 edge_if_else_key = json_key.replace("{", "").replace("}", "")
-                                edge_if_else_arr = edge_if_else_key.split(".")
+                                edge_if_else_arr = edge_if_else_key.split("!>")
 
                                 is_json = self.is_json(json_text=if_else_result)
 
@@ -1110,20 +1115,17 @@ def auto_execute(uuid, s=None, controller_data=None, text=None, app_uuid=None):
         else:
             controller_data[app_uuid] = {"text": str(text)}
 
-        Workflow.where('uuid', uuid).update({
-            'controller_data': json.dumps(controller_data),
-            'update_time': Time.get_date_time()
-        })
 
     def thread_exec():
         async def run():
-            await asyncio.gather(Auto(socket=s).run(uuid=uuid))
+            await asyncio.gather(Auto(socket=s).run(uuid=uuid,controller_data=controller_data))
 
         try:
             asyncio.run(run())
         except RuntimeError:
-            asyncio.gather(Auto(socket=s).run(uuid=uuid))
-
+            asyncio.gather(Auto(socket=s).run(uuid=uuid,controller_data=controller_data))
+    while(threading.active_count()>1):
+        ttime.sleep(0.1)
     t = threading.Thread(target=thread_exec)
-    t.setDaemon(True)
+    t.setDaemon(False)
     t.start()
