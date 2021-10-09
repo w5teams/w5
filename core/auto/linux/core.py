@@ -908,6 +908,14 @@ class Auto(object):
             is_while = True
 
             while is_while:
+                if target_app == self.end_app:
+                    await self.add_execute_logs(uuid=uuid, app_uuid=self.end_app, app_name="结束", result="剧本执行结束",
+                                                status=0, html="<span>剧本执行结束</span>")
+                    await self.add_report()
+                    await self.decr_sum(uuid=uuid)
+                    # redis.delete(*redis.keys(pattern='*{key}*'.format(key=self.only_id)))
+                    is_while = False
+                    break
                 try:
                     edge_name, source_app, next_app, is_switch, edge_action, edge_if_else = await self.find_next_app(
                         edges=self.flow_json["edges"],
@@ -1099,15 +1107,6 @@ class Auto(object):
                     await self.add_execute_logs(uuid=uuid, app_uuid=self.end_app, app_name="结束", result="剧本执行结束",
                                                 status=0, html="<span>剧本执行结束</span>")
                     await self.decr_sum(uuid=uuid)
-                    is_while = False
-                    break
-
-                if next_app == self.end_app:
-                    await self.add_execute_logs(uuid=uuid, app_uuid=self.end_app, app_name="结束", result="剧本执行结束",
-                                                status=0, html="<span>剧本执行结束</span>")
-                    await self.add_report()
-                    await self.decr_sum(uuid=uuid)
-                    # redis.delete(*redis.keys(pattern='*{key}*'.format(key=self.only_id)))
                     is_while = False
                     break
 
