@@ -917,7 +917,7 @@ class Auto(object):
                         final_res = ''
                         for temp_str in edge_if_else.split(','):
                             if temp_str.startswith('@'):
-                                temp_status, temp_item = await self.analysis_var(edge_if_else)
+                                temp_status, temp_item = await self.analysis_var(temp_str)
                                 final_res = final_res + temp_item + ','
                             else:
                                 final_res = final_res + temp_str + ','
