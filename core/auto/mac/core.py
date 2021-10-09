@@ -913,6 +913,18 @@ class Auto(object):
                         edges=self.flow_json["edges"],
                         next_app=target_app
                     )
+                    if edge_if_else:
+                        final_res = ''
+                        for temp_str in edge_if_else.split(','):
+                            if temp_str.startswith('@'):
+                                temp_status, temp_item = await self.analysis_var(edge_if_else)
+                                final_res = final_res + temp_item + ','
+                            else:
+                                final_res = final_res + temp_str + ','
+                        if final_res:
+                            edge_if_else = final_res[:-1]
+                        else:
+                            edge_if_else = final_res
                 except Exception as e:
                     await self.add_execute_logs(uuid=uuid, app_uuid="", app_name="", result="当前剧本不具有可执行条件", status=1,
                                                 html="<span>当前剧本不具有可执行条件</span>")
