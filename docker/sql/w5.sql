@@ -1,3 +1,6 @@
+create database w5_db DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+flush privileges;
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
