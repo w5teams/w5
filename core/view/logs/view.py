@@ -8,6 +8,8 @@ def get_logs_list():
     if request.method == "POST":
         keywords = request.json.get("keywords", "")
         type = request.json.get("type", "0")
+        page = request.json.get("page", 1)
+        page_count = request.json.get("page_count", 10)
 
         logs_list = Logs.join(
             Workflow.__table__,
@@ -30,7 +32,7 @@ def get_logs_list():
             logs_list = logs_list.where(Logs.__table__ + ".uuid", type)
 
         if str(keywords) == "":
-            logs_list = logs_list.order_by('id', 'desc').get()
+            logs_list = logs_list.order_by('id', 'desc').paginate(page_count, page)
         else:
             logs_list = logs_list.where(
                 Logs.__table__ + '.result',
@@ -40,9 +42,9 @@ def get_logs_list():
                 Logs.__table__ + '.app_name',
                 'like',
                 '%{keywords}%'.format(keywords=keywords)
-            ).order_by('id', 'desc').get()
+            ).order_by('id', 'desc').paginate(page_count, page)
 
-        return Response.re(data=logs_list.serialize())
+        return Response.re(data=Page(model=logs_list).to())
 
 
 @r.route("/post/logs/del", methods=['GET', 'POST'])

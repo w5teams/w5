@@ -8,6 +8,8 @@ def get_user_list():
     if request.method == "POST":
         keywords = request.json.get("keywords", "")
         type = request.json.get("type", "0")
+        page = request.json.get("page", 1)
+        page_count = request.json.get("page_count", 10)
 
         workflow_list = Workflow.join(
             Users.__table__,
@@ -39,15 +41,15 @@ def get_user_list():
             workflow_list = workflow_list.where(Workflow.__table__ + ".type_id", type)
 
         if str(keywords) == "":
-            workflow_list = workflow_list.order_by(Workflow.__table__ + '.id', 'desc').get()
+            workflow_list = workflow_list.order_by(Workflow.__table__ + '.id', 'desc').paginate(page_count, page)
         else:
             workflow_list = workflow_list.where(
                 Workflow.__table__ + '.name',
                 'like',
                 '%{keywords}%'.format(keywords=keywords)
-            ).order_by(Workflow.__table__ + '.id', 'desc').get()
+            ).order_by(Workflow.__table__ + '.id', 'desc').paginate(page_count, page)
 
-        return Response.re(data=workflow_list.serialize())
+        return Response.re(data=Page(model=workflow_list).to())
 
 
 @r.route("/post/workflow/add", methods=['GET', 'POST'])
@@ -79,6 +81,11 @@ def post_workflow_add():
                 'local_var_data': "none",
                 'remarks': "",
                 'status': 0,
+                'grid_type': "mesh",
+                'edge_marker': "block",
+                'edge_color': "#ccc",
+                'edge_connector': "normal",
+                'edge_router': "normal",
                 'update_time': Time.get_date_time(),
                 'create_time': Time.get_date_time()
             })
@@ -94,6 +101,11 @@ def post_workflow_add():
             flow_data = request.json.get("flow_data", "")
             controller_data = request.json.get("controller_data", "")
             local_var_data = request.json.get("local_var_data", "")
+            grid_type = request.json.get("grid_type", "")
+            edge_marker = request.json.get("edge_marker", "")
+            edge_color = request.json.get("edge_color", "")
+            edge_connector = request.json.get("edge_connector", "")
+            edge_router = request.json.get("edge_router", "")
 
             Workflow.insert({
                 'uuid': str(uuid),
@@ -111,6 +123,11 @@ def post_workflow_add():
                 'local_var_data': local_var_data,
                 'remarks': remarks,
                 'status': 0,
+                'grid_type': grid_type,
+                'edge_marker': edge_marker,
+                'edge_color': edge_color,
+                'edge_connector': edge_connector,
+                'edge_router': edge_router,
                 'update_time': Time.get_date_time(),
                 'create_time': Time.get_date_time()
             })
@@ -138,6 +155,11 @@ def get_workflow_detail():
             'remarks',
             'local_var_data',
             'status',
+            'grid_type',
+            'edge_marker',
+            'edge_color',
+            'edge_connector',
+            'edge_router',
             'update_time',
             'create_time'
         ).where("uuid", uuid).first()
@@ -161,6 +183,11 @@ def post_workflow_update():
         type_id = request.json.get("type_id", "")
         remarks = request.json.get("remarks", "")
         local_var_data = request.json.get("local_var_data", "")
+        grid_type = request.json.get("grid_type", "")
+        edge_marker = request.json.get("edge_marker", "")
+        edge_color = request.json.get("edge_color", "")
+        edge_connector = request.json.get("edge_connector", "")
+        edge_router = request.json.get("edge_router", "")
 
         if str(controller_data) != "{}":
             work_info = Workflow.select("timer_app").where('uuid', uuid).first()
@@ -190,6 +217,11 @@ def post_workflow_update():
             'type_id': type_id,
             'remarks': remarks,
             'local_var_data': local_var_data,
+            'grid_type': grid_type,
+            'edge_marker': edge_marker,
+            'edge_color': edge_color,
+            'edge_connector': edge_connector,
+            'edge_router': edge_router,
             'update_time': Time.get_date_time()
         })
 
@@ -407,32 +439,10 @@ def get_workflow_exec(uuid):
 
     exec_data = db.select(sql)
 
-    time_data = {
-        "00": 0,
-        "01": 0,
-        "02": 0,
-        "03": 0,
-        "04": 0,
-        "05": 0,
-        "06": 0,
-        "07": 0,
-        "08": 0,
-        "09": 0,
-        "10": 0,
-        "11": 0,
-        "12": 0,
-        "13": 0,
-        "14": 0,
-        "15": 0,
-        "16": 0,
-        "17": 0,
-        "18": 0,
-        "19": 0,
-        "20": 0,
-        "21": 0,
-        "22": 0,
-        "23": 0
-    }
+    time_data = {}
+
+    for t in Time.get_hour():
+        time_data[t] = 0
 
     for t in exec_data:
         arr = str(t.time).split("#")

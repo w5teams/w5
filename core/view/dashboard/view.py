@@ -57,15 +57,15 @@ def get_dashboard_sums():
 def get_dashboard_workflow():
     if request.method == "POST":
         sql = '''
-            SELECT
-                {type}.name AS type,
-                sum(1) AS value
-            FROM
-                {workflow}
-            JOIN {type} ON {workflow}.type_id = {type}.id
-            GROUP BY
-                {type}.name;
-            '''.format(
+        SELECT
+            {type}.name AS type,
+            sum(1) AS value
+        FROM
+            {workflow}
+        JOIN {type} ON {workflow}.type_id = {type}.id
+        GROUP BY
+            {type}.name;
+        '''.format(
             type=Types.__table__,
             workflow=Workflow.__table__
         )
@@ -77,61 +77,229 @@ def get_dashboard_workflow():
 @r.route("/get/dashboard/exec", methods=['GET', 'POST'])
 def get_dashboard_exec():
     if request.method == "POST":
-        sql = '''
+        type = request.json.get("type", 1)
+
+        result = []
+
+        if type == 1:
+            sql = '''
             SELECT
-                DATE_FORMAT( create_time, '%%m-%%d#%%H' ) AS time,
+                DATE_FORMAT(create_time, '%%H') AS time,
                 count(id) AS value 
             FROM
                 {logs} 
             WHERE
-                DATE( create_time ) > DATE_SUB( CURDATE(), INTERVAL 1 DAY ) 
+                to_days(create_time) = to_days(now())
             GROUP BY
                 time;
             '''.format(
-            logs=Logs.__table__
-        )
+                logs=Logs.__table__
+            )
 
-        exec_data = db.select(sql)
+            exec_data = db.select(sql)
 
-        time_data = {
-            "00": 0,
-            "01": 0,
-            "02": 0,
-            "03": 0,
-            "04": 0,
-            "05": 0,
-            "06": 0,
-            "07": 0,
-            "08": 0,
-            "09": 0,
-            "10": 0,
-            "11": 0,
-            "12": 0,
-            "13": 0,
-            "14": 0,
-            "15": 0,
-            "16": 0,
-            "17": 0,
-            "18": 0,
-            "19": 0,
-            "20": 0,
-            "21": 0,
-            "22": 0,
-            "23": 0
-        }
+            time_data = {}
 
-        for t in exec_data:
-            arr = str(t.time).split("#")
-            time_data[arr[1]] = t.value
+            for t in Time.get_hour():
+                time_data[t] = 0
 
-        result = []
+            for t in exec_data:
+                time_data[t.time] = t.value
 
-        for t in time_data:
-            data = {
-                "time": t,
-                "value": time_data[t]
-            }
+            for t in time_data:
+                data = {
+                    "time": t,
+                    "value": time_data[t]
+                }
 
-            result.append(data)
+                result.append(data)
+        elif type == 2:
+            sql = '''
+            SELECT
+                DATE_FORMAT(create_time, '%%H') AS time,
+                count(id) AS value 
+            FROM
+                {logs} 
+            WHERE
+                TO_DAYS(NOW()) - TO_DAYS(create_time) <= 1  
+            GROUP BY
+                time;
+            '''.format(
+                logs=Logs.__table__
+            )
+
+            exec_data = db.select(sql)
+
+            time_data = {}
+
+            for t in Time.get_hour():
+                time_data[t] = 0
+
+            for t in exec_data:
+                time_data[t.time] = t.value
+
+            for t in time_data:
+                data = {
+                    "time": t,
+                    "value": time_data[t]
+                }
+
+                result.append(data)
+
+        elif type == 3:
+            sql = '''
+            SELECT
+                DATE_FORMAT( create_time, '%%m-%%d' ) AS time,
+                count( id ) AS value
+            FROM
+                {logs}  
+            WHERE
+                YEARWEEK(date_format(create_time, '%%Y-%%m-%%d')) = YEARWEEK(now()) 
+            GROUP BY
+                time;
+            '''.format(
+                logs=Logs.__table__
+            )
+
+            exec_data = db.select(sql)
+
+            time_data = {}
+
+            for t in Time.get_week():
+                time_data[t] = 0
+
+            for t in exec_data:
+                time_data[t.time] = t.value
+
+            for t in time_data:
+                data = {
+                    "time": t,
+                    "value": time_data[t]
+                }
+
+                result.append(data)
+
+        elif type == 4:
+            sql = '''
+            SELECT
+                DATE_FORMAT( create_time, '%%m-%%d' ) AS time,
+                count( id ) AS value
+            FROM
+                {logs}
+            WHERE
+                date_format( create_time, '%%Y-%%m' ) = date_format( now(), '%%Y-%%m' ) 
+            GROUP BY
+                time
+            ORDER BY time;
+            '''.format(
+                logs=Logs.__table__
+            )
+
+            exec_data = db.select(sql)
+
+            time_data = {}
+
+            for t in Time.get_month():
+                time_data[t] = 0
+
+            for t in exec_data:
+                time_data[t.time] = t.value
+
+            for t in time_data:
+                data = {
+                    "time": t,
+                    "value": time_data[t]
+                }
+
+                result.append(data)
+
+        elif type == 5:
+            sql = '''
+            SELECT
+                DATE_FORMAT( create_time, '%%m-%%d' ) AS time,
+                count( id ) AS value
+            FROM
+                {logs}
+            WHERE
+               date_format( create_time, '%%Y-%%m' ) = date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%%Y-%%m') 
+            GROUP BY
+                time
+            ORDER BY time;
+            '''.format(
+                logs=Logs.__table__
+            )
+
+            exec_data = db.select(sql)
+
+            time_data = {}
+
+            for t in Time.get_upper_month():
+                time_data[t] = 0
+
+            for t in exec_data:
+                time_data[t.time] = t.value
+
+            for t in time_data:
+                data = {
+                    "time": t,
+                    "value": time_data[t]
+                }
+
+                result.append(data)
+        elif type == 6:
+            sql = '''
+            SELECT
+                DATE_FORMAT( create_time, '%%m') AS time,
+                count( id ) AS value
+            FROM
+                {logs} 
+            WHERE
+                YEAR(create_time)=YEAR(NOW())
+            GROUP BY
+                time
+            ORDER BY time;
+            '''.format(
+                logs=Logs.__table__
+            )
+
+            exec_data = db.select(sql)
+
+            time_data = {}
+
+            for t in Time.get_year():
+                time_data[t] = 0
+
+            for t in exec_data:
+                time_data[t.time] = t.value
+
+            for t in time_data:
+                data = {
+                    "time": t,
+                    "value": time_data[t]
+                }
+
+                result.append(data)
 
         return Response.re(data=result)
+
+
+@r.route("/get/dashboard/login_history", methods=['GET', 'POST'])
+def get_dashboard_login_history():
+    if request.method == "POST":
+        login_history_list = LoginHistory.join(
+            Users.__table__,
+            LoginHistory.__table__ + '.user_id',
+            '=',
+            Users.__table__ + '.id'
+        ).select(
+            Users.__table__ + '.id',
+            Users.__table__ + '.account',
+            Users.__table__ + '.nick_name',
+            Users.__table__ + '.avatar',
+            LoginHistory.__table__ + ".login_time",
+        ).order_by(
+            LoginHistory.__table__ + '.id',
+            'desc'
+        ).limit(100).get()
+
+        return Response.re(data=login_history_list.serialize())
