@@ -1,8 +1,9 @@
-create database w5_db DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+create database w5_db DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
 flush privileges;
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+USE w5_db;
 
 -- ----------------------------
 -- Table structure for w5_login_history
@@ -37,7 +38,7 @@ CREATE TABLE `w5_logs` (
   `args` text COMMENT '执行参数',
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of w5_logs
@@ -56,7 +57,7 @@ CREATE TABLE `w5_report` (
   `remarks` varchar(255) NOT NULL DEFAULT '',
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of w5_report
@@ -76,7 +77,7 @@ CREATE TABLE `w5_setting` (
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_key` (`key`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of w5_setting
@@ -105,7 +106,7 @@ CREATE TABLE `w5_timer` (
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uid` (`timer_uuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of w5_timer
@@ -124,7 +125,7 @@ CREATE TABLE `w5_type` (
   `update_time` datetime DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of w5_type
@@ -151,7 +152,7 @@ CREATE TABLE `w5_users` (
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_account` (`account`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of w5_users
@@ -175,7 +176,7 @@ CREATE TABLE `w5_variablen` (
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index.key` (`key`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of w5_variablen
@@ -213,7 +214,7 @@ CREATE TABLE `w5_workflow` (
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_uuid` (`uuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ----------------------------
 -- Records of w5_workflow
