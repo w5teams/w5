@@ -1,9 +1,5 @@
 ![x](./images/x.png)
 
-## 前端开源地址
-
-https://github.com/w5teams/w5_web
-
 ## 什么是 W5 SOAR?
 
 **W5** 是一款基于 **Python** 开发的安全编排与自动化响应平台，为了企业安全做出了精心的打造，无需编写代码即可实现自动化响应流程，可节约企业 **80%** 的成本。
@@ -72,7 +68,7 @@ https://github.com/w5teams/w5_web
 
 - **官网**：https://w5.io
 - **文档**：https://w5.io/help/  (文档有完整的教程)
-- **Github**: https://github.com/w5teams/w5 (感觉项目好的请来个 Star)
+- **Github**: https://github.com/w5teams/w5 (感觉项目好的请来个 Star 谢谢)
 
 ## 深入交流
 
