@@ -58,6 +58,34 @@ def post_system_del():
         return Response.re()
 
 
+@r.route("/post/system/placement", methods=['GET', 'POST'])
+def post_system_placement():
+    if request.method == "POST":
+        placement = request.json.get("placement", "")
+
+        Setting.where("key", "placement").update(
+            {
+                "value": placement,
+                "update_time": Time.get_date_time()
+            }
+        )
+
+        return Response.re()
+
+
+@r.route("/get/system/placement", methods=['GET', 'POST'])
+def get_system_placement():
+    if request.method == "POST":
+        setting = Setting.where("key", "placement").get()
+
+        data = {}
+
+        for s in setting:
+            data[s.key] = s.value
+
+        return Response.re(data=data)
+
+
 def get_w5_json():
     try:
         result = requests.get(url=current_app.config["update_path"] + "/w5.json", timeout=5)
@@ -96,7 +124,7 @@ def init_key():
 
 def init_timer():
     def setting():
-        result = redis.set("manage_timer_lock", 1, nx=True, ex=30)
+        result = redis.set("manage_timer_lock", 1, nx=True, ex=8)
         if result:
             manage_timer = ManageTimer()
             manage_timer.start()

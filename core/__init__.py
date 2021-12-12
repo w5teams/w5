@@ -11,7 +11,7 @@ from flask_sockets import Sockets
 from core.view import Decorator
 from flask import (Flask, send_from_directory)
 
-version = "0.5.0"
+version = "0.5.1"
 
 db = Orator()
 redis = FlaskRedis()

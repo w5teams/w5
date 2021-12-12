@@ -8,7 +8,7 @@ def api_webhook():
     if request.method == "POST":
         api_key = request.json.get("key", "")
         app_uuid = request.json.get("uuid", "")
-        text = request.json.get("text", "")
+        data = request.json.get("data", "")
 
         if str(api_key).strip() == "" or api_key is None:
             return Response.re(err=ErrWebhookkey)
@@ -16,7 +16,7 @@ def api_webhook():
         if str(app_uuid).strip() == "" or app_uuid is None:
             return Response.re(err=ErrWebhookUUID)
 
-        if str(text).strip() == "" or text is None:
+        if str(data).strip() == "" or data is None:
             return Response.re(err=ErrWebhookText)
 
         key = "api_key"
@@ -37,9 +37,7 @@ def api_webhook():
             if str(workflow.status) == "1":
                 return Response.re(err=ErrWebhookStatus)
             else:
-                print(00000)
-                auto_execute(workflow.uuid, controller_data=workflow.controller_data, text=text, app_uuid=app_uuid)
-                print(2222)
+                auto_execute(workflow.uuid, controller_data=workflow.controller_data, data=data, app_uuid=app_uuid)
 
         else:
             return Response.re(err=ErrWebhookUUIDNot)

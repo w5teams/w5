@@ -26,7 +26,5 @@ async def send(key, text, desp):
         logger.error("[Server酱] 请求 API 失败:{e}", e=e)
         return {"status": 2, "result": "请求 Server酱 API 失败"}
 
-    if r.json()["errno"] == 0:
-        return {"status": 0, "result": r.json()}
-    else:
-        return {"status": 2, "result": r.json()}
+    return {"status": 0, "result": r.json()}
+

@@ -1,6 +1,6 @@
 ![x](./images/x.png)
 
-## 前端开源地址 
+## 前端开源地址
 
 https://github.com/w5teams/w5_web
 
@@ -72,7 +72,7 @@ https://github.com/w5teams/w5_web
 
 - **官网**：https://w5.io
 - **文档**：https://w5.io/help/  (文档有完整的教程)
-- **Github**: https://github.com/w5teams/w5 (感觉项目好的请来个 Star 谢谢)
+- **Github**: https://github.com/w5teams/w5 (感觉项目好的请来个 Star)
 
 ## 深入交流
 

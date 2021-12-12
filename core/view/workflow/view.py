@@ -35,6 +35,7 @@ def get_user_list():
             Workflow.__table__ + '.timer_app',
             Workflow.__table__ + '.webhook_app',
             Workflow.__table__ + '.input_app',
+            Workflow.__table__ + '.for_list',
         )
 
         if str(type) != "0":
@@ -75,15 +76,16 @@ def post_workflow_add():
                 'input_app': "",
                 'webhook_app': "",
                 'timer_app': "",
+                'for_list': "",
                 'flow_json': "",
                 'flow_data': "",
                 'controller_data': "",
                 'local_var_data': "none",
                 'remarks': "",
                 'status': 0,
-                'grid_type': "mesh",
+                'grid_type': "dot",
                 'edge_marker': "block",
-                'edge_color': "#ccc",
+                'edge_color': "#c7342e",
                 'edge_connector': "normal",
                 'edge_router': "normal",
                 'update_time': Time.get_date_time(),
@@ -97,6 +99,7 @@ def post_workflow_add():
             input_app = request.json.get("input_app", "")
             webhook_app = request.json.get("webhook_app", "")
             timer_app = request.json.get("timer_app", "")
+            for_list = request.json.get("for_list", "")
             flow_json = request.json.get("flow_json", "")
             flow_data = request.json.get("flow_data", "")
             controller_data = request.json.get("controller_data", "")
@@ -117,6 +120,7 @@ def post_workflow_add():
                 'input_app': input_app,
                 'webhook_app': webhook_app,
                 'timer_app': timer_app,
+                'for_list': for_list,
                 'flow_json': flow_json,
                 'flow_data': flow_data,
                 'controller_data': controller_data,
@@ -148,6 +152,7 @@ def get_workflow_detail():
             'input_app',
             'webhook_app',
             'timer_app',
+            'for_list',
             'flow_json',
             'flow_data',
             'controller_data',
@@ -177,6 +182,7 @@ def post_workflow_update():
         input_app = request.json.get("input_app", "")
         webhook_app = request.json.get("webhook_app", "")
         timer_app = request.json.get("timer_app", "")
+        for_list = request.json.get("for_list", "")
         flow_json = request.json.get("flow_json", "")
         flow_data = request.json.get("flow_data", "")
         controller_data = request.json.get("controller_data", "")
@@ -211,6 +217,7 @@ def post_workflow_update():
             'input_app': input_app,
             'webhook_app': webhook_app,
             'timer_app': timer_app,
+            'for_list': for_list,
             'flow_json': flow_json,
             'flow_data': flow_data,
             'controller_data': controller_data,

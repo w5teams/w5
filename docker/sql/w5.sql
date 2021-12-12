@@ -85,6 +85,7 @@ CREATE TABLE `w5_setting` (
 BEGIN;
 INSERT INTO `w5_setting` VALUES (1, 'w5_key', '', '2021-03-28 17:55:45', '2020-11-29 00:32:15');
 INSERT INTO `w5_setting` VALUES (2, 'api_key', '', '2021-04-26 16:15:51', '2020-12-05 18:14:56');
+INSERT INTO `w5_setting` VALUES (3, 'placement', 'right', '2021-04-26 16:15:51', '2020-12-05 18:14:56');
 COMMIT;
 
 -- ----------------------------
@@ -201,6 +202,7 @@ CREATE TABLE `w5_workflow` (
   `input_app` varchar(100) NOT NULL DEFAULT '',
   `webhook_app` varchar(100) NOT NULL DEFAULT '',
   `timer_app` varchar(100) NOT NULL DEFAULT '',
+  `for_list` text,
   `flow_json` text,
   `flow_data` text,
   `controller_data` text,
