@@ -14,17 +14,17 @@
   "args": {
     "scan": [
       {
-        "key": "Target",
+        "key": "target",
         "type": "text",
         "required": true
       },
       {
-        "key": "Port",
+        "key": "ports",
         "type": "text",
         "required": true
       },
       {
-        "key": "Protocol",
+        "key": "protocol",
         "type": "select",
         "required": true,
         "default": "tcp",

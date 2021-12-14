@@ -7,6 +7,8 @@ from . import *
 def get_user_list():
     if request.method == "POST":
         keywords = request.json.get("keywords", "")
+        page = request.json.get("page", 1)
+        page_count = request.json.get("page_count", 10)
 
         if str(keywords) == "":
             user_list = Users.select(
@@ -16,8 +18,9 @@ def get_user_list():
                 'email',
                 'status',
                 'update_time',
-                'create_time'
-            ).order_by('id', 'desc').get()
+                'create_time',
+                'avatar'
+            ).order_by('id', 'desc').paginate(page_count, page)
         else:
             user_list = Users.select(
                 'id',
@@ -25,7 +28,8 @@ def get_user_list():
                 'nick_name',
                 'email',
                 'update_time',
-                'create_time'
+                'create_time',
+                'avatar'
             ).where(
                 'account',
                 'like',
@@ -38,9 +42,27 @@ def get_user_list():
                 'email',
                 'like',
                 '%{keywords}%'.format(keywords=keywords)
-            ).order_by('id', 'desc').get()
+            ).order_by('id', 'desc').paginate(page_count, page)
 
-        return Response.re(data=user_list.serialize())
+        return Response.re(data=Page(model=user_list).to())
+
+
+@r.route("/get/user/info", methods=['GET', 'POST'])
+def get_user_info():
+    if request.method == "POST":
+        id = request.json.get("id", "")
+
+        user_info = Users.select(
+            'id',
+            'account',
+            'nick_name',
+            'email',
+            'update_time',
+            'create_time',
+            'avatar'
+        ).where("id", id).first()
+
+        return Response.re(data=user_info.serialize())
 
 
 @r.route("/post/user/add", methods=['GET', 'POST'])
@@ -50,6 +72,7 @@ def post_user_add():
         passwd = request.json.get("passwd", "")
         nick_name = request.json.get("nick_name", "")
         email = request.json.get("email", "")
+        avatar = request.json.get("avatar", "")
 
         is_user_use = Users.where('account', account).first()
 
@@ -63,6 +86,7 @@ def post_user_add():
             'passwd': md5_password,
             'nick_name': nick_name,
             'email': email,
+            "avatar": avatar,
             'status': 0,
             'update_time': Time.get_date_time(),
             'create_time': Time.get_date_time()
@@ -78,12 +102,14 @@ def post_user_update():
         nick_name = request.json.get("nick_name", "")
         email = request.json.get("email", "")
         passwd = request.json.get("passwd", "")
+        avatar = request.json.get("avatar", "")
 
         if str(passwd) == "":
             Users.where('id', id).update(
                 {
                     "nick_name": nick_name,
                     "email": email,
+                    "avatar": avatar,
                     "update_time": Time.get_date_time()
                 }
             )
@@ -94,6 +120,7 @@ def post_user_update():
                 {
                     "nick_name": nick_name,
                     "email": email,
+                    "avatar": avatar,
                     "passwd": md5_password,
                     "update_time": Time.get_date_time()
                 }
@@ -136,5 +163,18 @@ def post_user_status():
                 "update_time": Time.get_date_time()
             }
         )
+
+        return Response.re()
+
+
+@r.route("/post/user/login_history", methods=['GET', 'POST'])
+def post_user_login_history():
+    if request.method == "POST":
+        user_id = request.json.get("user_id", "")
+
+        LoginHistory.insert({
+            'user_id': user_id,
+            'login_time': Time.get_date_time()
+        })
 
         return Response.re()

@@ -45,63 +45,53 @@ def post_system_del():
         type = request.json.get("type", 0)
 
         if type == 1:
-            Workflow.where("id", "!=", "0").delete()
+            Workflow.truncate()
         elif type == 2:
-            Logs.where("id", "!=", "0").delete()
+            Logs.truncate()
         elif type == 3:
-            Variablen.where("id", "!=", "0").delete()
+            Variablen.truncate()
         elif type == 4:
             redis.flushdb()
         elif type == 5:
-            Report.where("id", "!=", "0").delete()
+            Report.truncate()
 
         return Response.re()
+
+
+@r.route("/post/system/placement", methods=['GET', 'POST'])
+def post_system_placement():
+    if request.method == "POST":
+        placement = request.json.get("placement", "")
+
+        Setting.where("key", "placement").update(
+            {
+                "value": placement,
+                "update_time": Time.get_date_time()
+            }
+        )
+
+        return Response.re()
+
+
+@r.route("/get/system/placement", methods=['GET', 'POST'])
+def get_system_placement():
+    if request.method == "POST":
+        setting = Setting.where("key", "placement").get()
+
+        data = {}
+
+        for s in setting:
+            data[s.key] = s.value
+
+        return Response.re(data=data)
 
 
 def get_w5_json():
     try:
         result = requests.get(url=current_app.config["update_path"] + "/w5.json", timeout=5)
-        return result.json()["w5"]
+        return result.json()
     except Exception as e:
         return "fail"
-
-
-def check_update():
-    version_info = Version.select('name', 'version').get()
-
-    w5_data = get_w5_json()
-
-    data = {}
-
-    if w5_data == "fail":
-        data["is_w5"] = True
-        data["w5"] = w5_data
-        return data
-
-    if VersionUtil.compare(str(w5_data["version"]), version_info[0].version) == ">":
-        data["is_w5"] = True
-        data["w5"] = w5_data
-    else:
-        data["is_w5"] = False
-
-    return data
-
-
-def update_version(w5_version):
-    with db.transaction():
-        Version.where('name', "w5").update(
-            {
-                "version": w5_version,
-                "update_time": Time.get_date_time()
-            }
-        )
-
-
-@r.route("/get/system/version", methods=['GET', 'POST'])
-def post_system_version():
-    if request.method == "POST":
-        data = check_update()
-        return Response.re(data=data)
 
 
 @r.route("/get/system/w5json", methods=['GET', 'POST'])
@@ -134,7 +124,7 @@ def init_key():
 
 def init_timer():
     def setting():
-        result = redis.set("manage_timer_lock", 1, nx=True, ex=30)
+        result = redis.set("manage_timer_lock", 1, nx=True, ex=8)
         if result:
             manage_timer = ManageTimer()
             manage_timer.start()

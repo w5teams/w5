@@ -33,11 +33,6 @@ class Setting(db.Model):
     __timestamps__ = False
 
 
-class Version(db.Model):
-    __table__ = 'w5_version'
-    __timestamps__ = False
-
-
 class Report(db.Model):
     __table__ = 'w5_report'
     __timestamps__ = False
@@ -45,4 +40,9 @@ class Report(db.Model):
 
 class Timer(db.Model):
     __table__ = 'w5_timer'
+    __timestamps__ = False
+
+
+class LoginHistory(db.Model):
+    __table__ = 'w5_login_history'
     __timestamps__ = False

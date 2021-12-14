@@ -7,6 +7,8 @@ from . import *
 def get_report_list():
     if request.method == "POST":
         keywords = request.json.get("keywords", "")
+        page = request.json.get("page", 1)
+        page_count = request.json.get("page_count", 10)
 
         report_list = Report.select(
             Report.__table__ + '.id',
@@ -17,7 +19,7 @@ def get_report_list():
         )
 
         if str(keywords) == "":
-            report_list = report_list.order_by('id', 'desc').get()
+            report_list = report_list.order_by('id', 'desc').paginate(page_count, page)
         else:
             report_list = report_list.where(
                 Report.__table__ + '.workflow_name',
@@ -31,9 +33,9 @@ def get_report_list():
                 Report.__table__ + '.report_no',
                 'like',
                 '%{keywords}%'.format(keywords=keywords)
-            ).order_by('id', 'desc').get()
+            ).order_by('id', 'desc').paginate(page_count, page)
 
-        return Response.re(data=report_list.serialize())
+        return Response.re(data=Page(model=report_list).to())
 
 
 @r.route("/get/report/log", methods=['GET', 'POST'])

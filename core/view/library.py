@@ -14,6 +14,7 @@ from core.utils.times import Time
 from core.utils.randoms import Random
 from core.utils.file import File
 from core.utils.zip import Zip
+from core.utils.pages import Page
 from core.utils.version import Version as VersionUtil
 from rpyc.utils.server import ThreadedServer
 from flask import (request, current_app, Blueprint)
@@ -24,4 +25,4 @@ if platform.system() == 'Windows':
 elif platform.system() == 'Linux':
     from core.auto.linux.core import auto_execute, ManageTimer
 elif platform.system() == "Darwin":
-    from core.auto.mac.core import auto_execute, ManageTimer
+    print("Mac platform is not supported.")

@@ -7,6 +7,8 @@ from . import *
 def get_timer_list():
     if request.method == "POST":
         keywords = request.json.get("keywords", "")
+        page = request.json.get("page", 1)
+        page_count = request.json.get("page_count", 10)
 
         timer_list = Timer.join(
             Workflow.__table__,
@@ -30,15 +32,15 @@ def get_timer_list():
         )
 
         if str(keywords) == "":
-            timer_list = timer_list.order_by('id', 'desc').get()
+            timer_list = timer_list.order_by('id', 'desc').paginate(page_count, page)
         else:
             timer_list = timer_list.where(
                 Workflow.__table__ + '.name',
                 'like',
                 '%{keywords}%'.format(keywords=keywords)
-            ).order_by('id', 'desc').get()
+            ).order_by('id', 'desc').paginate(page_count, page)
 
-        return Response.re(data=timer_list.serialize())
+        return Response.re(data=Page(model=timer_list).to())
 
 
 @r.route("/post/timer/start_pause", methods=['GET', 'POST'])
