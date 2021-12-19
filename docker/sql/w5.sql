@@ -22,6 +22,23 @@ CREATE TABLE `w5_login_history` (
 BEGIN;
 COMMIT;
 
+DROP TABLE IF EXISTS `w5_audit`;
+CREATE TABLE `w5_audit` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `workflow_uuid` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `only_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `user_id` int NOT NULL DEFAULT '0',
+  `audit_app` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `start_app` varchar(100) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `status` int NOT NULL DEFAULT '0',
+  `update_time` datetime DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+BEGIN;
+COMMIT;
+
 -- ----------------------------
 -- Table structure for w5_logs
 -- ----------------------------
@@ -203,6 +220,8 @@ CREATE TABLE `w5_workflow` (
   `webhook_app` varchar(100) NOT NULL DEFAULT '',
   `timer_app` varchar(100) NOT NULL DEFAULT '',
   `for_list` text,
+  `if_list` text,
+  `audit_list` text,
   `flow_json` text,
   `flow_data` text,
   `controller_data` text,

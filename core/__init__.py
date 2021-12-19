@@ -11,7 +11,7 @@ from flask_sockets import Sockets
 from core.view import Decorator
 from flask import (Flask, send_from_directory)
 
-version = "0.5.1"
+version = "0.5.2"
 
 db = Orator()
 redis = FlaskRedis()
@@ -36,9 +36,10 @@ def init_route(app):
     from core.view.report import r as r_report
     from core.view.timer import r as r_timer
     from core.view.workflow import ws as ws_workflow
+    from core.view.audit import r as r_audit
 
     route_list = [r_login, r_user, r_type, r_variablen, r_system, r_apps, r_workflow, r_logs, r_dashboard, r_api,
-                  r_report, r_timer]
+                  r_report, r_timer, r_audit]
 
     for route in route_list:
         app.register_blueprint(route, url_prefix="/api/v1/w5")

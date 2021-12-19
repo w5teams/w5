@@ -46,3 +46,8 @@ class Timer(db.Model):
 class LoginHistory(db.Model):
     __table__ = 'w5_login_history'
     __timestamps__ = False
+
+
+class Audit(db.Model):
+    __table__ = 'w5_audit'
+    __timestamps__ = False

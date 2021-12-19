@@ -47,6 +47,16 @@ def get_user_list():
         return Response.re(data=Page(model=user_list).to())
 
 
+@r.route("/get/user/simple_list", methods=['GET', 'POST'])
+def get_user_simple_list():
+    if request.method == "POST":
+        sql = '''
+        select id,nick_name from `w5_users` where status=0 ORDER BY CONVERT(nick_name USING GBK);
+        '''
+        result = db.select(sql)
+        return Response.re(data=result)
+
+
 @r.route("/get/user/info", methods=['GET', 'POST'])
 def get_user_info():
     if request.method == "POST":

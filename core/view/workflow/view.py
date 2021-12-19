@@ -53,6 +53,16 @@ def get_user_list():
         return Response.re(data=Page(model=workflow_list).to())
 
 
+@r.route("/get/workflow/simple_list", methods=['GET', 'POST'])
+def get_workflow_simple_list():
+    if request.method == "POST":
+        sql = '''
+        select uuid,name from `w5_workflow` ORDER BY CONVERT(name USING GBK);
+        '''
+        result = db.select(sql)
+        return Response.re(data=result)
+
+
 @r.route("/post/workflow/add", methods=['GET', 'POST'])
 def post_workflow_add():
     if request.method == "POST":
@@ -77,6 +87,8 @@ def post_workflow_add():
                 'webhook_app': "",
                 'timer_app': "",
                 'for_list': "",
+                "if_list": "",
+                "audit_list": "",
                 'flow_json': "",
                 'flow_data': "",
                 'controller_data': "",
@@ -100,6 +112,8 @@ def post_workflow_add():
             webhook_app = request.json.get("webhook_app", "")
             timer_app = request.json.get("timer_app", "")
             for_list = request.json.get("for_list", "")
+            if_list = request.json.get("if_list", "")
+            audit_list = request.json.get("audit_list", "")
             flow_json = request.json.get("flow_json", "")
             flow_data = request.json.get("flow_data", "")
             controller_data = request.json.get("controller_data", "")
@@ -121,6 +135,8 @@ def post_workflow_add():
                 'webhook_app': webhook_app,
                 'timer_app': timer_app,
                 'for_list': for_list,
+                'if_list': if_list,
+                'audit_list': audit_list,
                 'flow_json': flow_json,
                 'flow_data': flow_data,
                 'controller_data': controller_data,
@@ -153,6 +169,8 @@ def get_workflow_detail():
             'webhook_app',
             'timer_app',
             'for_list',
+            'if_list',
+            'audit_list',
             'flow_json',
             'flow_data',
             'controller_data',
@@ -183,6 +201,8 @@ def post_workflow_update():
         webhook_app = request.json.get("webhook_app", "")
         timer_app = request.json.get("timer_app", "")
         for_list = request.json.get("for_list", "")
+        if_list = request.json.get("if_list", "")
+        audit_list = request.json.get("audit_list", "")
         flow_json = request.json.get("flow_json", "")
         flow_data = request.json.get("flow_data", "")
         controller_data = request.json.get("controller_data", "")
@@ -218,6 +238,8 @@ def post_workflow_update():
             'webhook_app': webhook_app,
             'timer_app': timer_app,
             'for_list': for_list,
+            'if_list': if_list,
+            'audit_list': audit_list,
             'flow_json': flow_json,
             'flow_data': flow_data,
             'controller_data': controller_data,
