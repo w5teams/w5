@@ -124,13 +124,25 @@ def init_key():
 
 def init_timer():
     def setting():
-        result = redis.set("manage_timer_lock", 1, nx=True, ex=8)
-        if result:
-            manage_timer = ManageTimer()
-            manage_timer.start()
+        manage_timer = ManageTimer()
+        manage_timer.start()
 
-            s = ThreadedServer(service=manage_timer, port=53124, auto_register=False)
-            s.start()
+        s = ThreadedServer(service=manage_timer, port=53124, auto_register=False)
+        s.start()
+
+    result = redis.set("manage_timer_lock", 1, nx=True, ex=8)
+
+    if result:
+        t = threading.Thread(target=setting)
+        t.setDaemon(True)
+        t.start()
+
+
+def init_async():
+    def setting():
+        new_loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(new_loop)
+        new_loop.run_forever()
 
     t = threading.Thread(target=setting)
     t.setDaemon(True)

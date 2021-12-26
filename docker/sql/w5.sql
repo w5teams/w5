@@ -34,10 +34,82 @@ CREATE TABLE `w5_audit` (
   `update_time` datetime DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 BEGIN;
 COMMIT;
+
+DROP TABLE IF EXISTS `w5_nav`;
+CREATE TABLE `w5_nav` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `key` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `icon` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `is_menu` int NOT NULL DEFAULT '0',
+  `up` int NOT NULL DEFAULT '0',
+  `order` int NOT NULL DEFAULT '0',
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DROP TABLE IF EXISTS `w5_role`;
+CREATE TABLE `w5_role` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `remarks` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `update_time` datetime DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DROP TABLE IF EXISTS `w5_role_nav`;
+CREATE TABLE `w5_role_nav` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `role_id` int NOT NULL DEFAULT '0',
+  `nav_id` int NOT NULL DEFAULT '0',
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+DROP TABLE IF EXISTS `w5_user_role`;
+CREATE TABLE `w5_user_role` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL DEFAULT '0',
+  `role_id` int NOT NULL DEFAULT '0',
+  `create_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `w5_nav` (`id`, `name`, `path`, `key`, `icon`, `is_menu`, `up`, `order`, `create_time`) VALUES
+(1, '仪表盘', '/dashboard', 'Dashboard', 'dashboard', 1, 0, 1, '2021-12-25 15:44:37'),
+(2, '剧本列表', '/workflow', 'WorkflowHome', 'cloud-sync', 1, 0, 2, '2021-12-25 15:45:33'),
+(3, '剧本编辑', '/workflow/edit/', 'WorkflowEdit', '', 2, 0, 0, '2021-12-25 15:49:58'),
+(4, '执行日志', '/logs', 'LogsHome', 'bug', 1, 0, 4, '2021-12-25 15:50:03'),
+(5, '应用中心', '/app', 'AppHome', 'appstore', 1, 0, 5, '2021-12-25 15:50:03'),
+(6, '全局变量', '/variablen', 'VariablenHome', 'gold', 1, 0, 7, '2021-12-25 15:51:43'),
+(7, '用户管理', '/user', 'UserHome', 'user', 1, 0, 8, '2021-12-25 15:51:43'),
+(8, '系统管理', '/system', 'SystemHome', 'setting', 1, 0, 9, '2021-12-25 15:51:43'),
+(9, '任务调度', '/timer', 'TimerHome', 'cluster', 1, 0, 3, '2021-12-25 15:51:43'),
+(10, '人工审计', '/audit', 'AuditHome', 'audit', 1, 0, 6, '2021-12-25 15:51:43');
+
+INSERT INTO `w5_role` (`id`, `name`, `remarks`, `update_time`, `create_time`) VALUES
+(1, '系统管理员', '用于维护系统的角色组', '2021-12-26 17:52:44', '2021-12-26 17:52:44');
+
+INSERT INTO `w5_role_nav` (`id`, `role_id`, `nav_id`, `create_time`) VALUES
+(1, 1, 3, '2021-12-26 17:52:44'),
+(2, 1, 1, '2021-12-26 17:52:44'),
+(3, 1, 2, '2021-12-26 17:52:44'),
+(4, 1, 9, '2021-12-26 17:52:44'),
+(5, 1, 4, '2021-12-26 17:52:44'),
+(6, 1, 5, '2021-12-26 17:52:44'),
+(7, 1, 10, '2021-12-26 17:52:44'),
+(8, 1, 6, '2021-12-26 17:52:44'),
+(9, 1, 7, '2021-12-26 17:52:44'),
+(10, 1, 8, '2021-12-26 17:52:44');
+
+INSERT INTO `w5_user_role` (`id`, `user_id`, `role_id`, `create_time`) VALUES
+(1, 1, 1, '2021-12-26 17:53:13');
 
 -- ----------------------------
 -- Table structure for w5_logs
@@ -51,8 +123,8 @@ CREATE TABLE `w5_logs` (
   `app_name` varchar(20) NOT NULL DEFAULT '',
   `result` text NOT NULL,
   `status` int NOT NULL DEFAULT '0',
-  `html` text COMMENT 'HTML',
-  `args` text COMMENT '执行参数',
+  `html` text,
+  `args` text,
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

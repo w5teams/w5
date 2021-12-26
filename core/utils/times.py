@@ -52,7 +52,7 @@ class Time(object):
         index = calendar.monthrange(int(str(curr_year_month).split("-")[0]), int(str(curr_year_month).split("-")[1]))[1]
 
         for i in range(index)[::-1]:
-            curr_month = datetime.datetime(now.year, now.month + 1, 1) - timedelta(days=i + 1)
+            curr_month = datetime.datetime(now.year, now.month, index) - timedelta(days=i)
             arr = str(curr_month).split(" ")[0].split("-")
             v = arr[1] + "-" + arr[2]
             result.append(v)

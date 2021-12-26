@@ -144,3 +144,8 @@ class ErrUploadZipR(object):
 class ErrUploadAppExist(object):
     errcode = 9026
     errmsg = 'APP 已经存在'
+
+
+class ErrRoleExist(object):
+    errcode = 9027
+    errmsg = '角色已经存在！'

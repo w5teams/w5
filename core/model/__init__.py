@@ -51,3 +51,23 @@ class LoginHistory(db.Model):
 class Audit(db.Model):
     __table__ = 'w5_audit'
     __timestamps__ = False
+
+
+class Nav(db.Model):
+    __table__ = 'w5_nav'
+    __timestamps__ = False
+
+
+class Role(db.Model):
+    __table__ = 'w5_role'
+    __timestamps__ = False
+
+
+class RoleNav(db.Model):
+    __table__ = 'w5_role_nav'
+    __timestamps__ = False
+
+
+class UserRole(db.Model):
+    __table__ = 'w5_user_role'
+    __timestamps__ = False
