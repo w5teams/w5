@@ -216,6 +216,8 @@ def post_workflow_update():
         edge_router = request.json.get("edge_router", "")
 
         if str(controller_data) != "{}":
+            is_exist = json.loads(controller_data).get(timer_app)
+
             work_info = Workflow.select("timer_app").where('uuid', uuid).first()
 
             if work_info:
@@ -225,7 +227,12 @@ def post_workflow_update():
                     w_timer_app = work_info.timer_app
 
                 conn = rpyc.connect('localhost', 53124)
-                conn.root.exec(uuid, timer_app, w_timer_app, controller_data)
+
+                if is_exist:
+                    conn.root.exec(uuid, timer_app, w_timer_app, controller_data)
+                else:
+                    conn.root.exec(uuid, "", w_timer_app, controller_data)
+
                 conn.close()
             else:
                 return Response.re(err=ErrIsNotPlayBook)

@@ -3,11 +3,6 @@
 from . import *
 
 
-@r.route("/webhookx", methods=['GET', 'POST'])
-def api_webhookx():
-    return Response.re()
-
-
 @r.route("/webhook", methods=['GET', 'POST'])
 def api_webhook():
     if request.method == "POST":
