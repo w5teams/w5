@@ -5,4 +5,4 @@ from loguru import logger
 
 async def hello_world(name):
     logger.info("[Hello World] APP 执行参数为: {name}", name=name)
-    return {"status": 0, "result": {"a": "b", "c": "阿斯达多撒所"}}
+    return {"status": 0, "result": "Hello," + str(name)}
