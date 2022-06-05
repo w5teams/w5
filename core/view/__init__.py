@@ -39,7 +39,7 @@ class Decorator(object):
         def after_request(resp):
             response_data = ""
             try:
-                response_data = resp.data
+                response_data = str(resp.data, "utf-8").encode('utf-8').decode("unicode_escape")
             except:
                 pass
 

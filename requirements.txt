@@ -24,3 +24,5 @@ paramiko== 2.7.2
 pywinrm== 0.4.1
 rpyc== 5.0.0
 nest-asyncio== 1.5.4
+MarkupSafe== 1.1.1
+rsa== 4.8

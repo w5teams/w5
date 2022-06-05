@@ -22,21 +22,23 @@ def w5_info(**kwargs):
     print(" ##@$%|||||||||||!`              :%@#@")
     print(" ###@&$||||||||!`               !&###@")
     print(" #####@&&%||||:.             `%&#####@")
-    print(" ########&&&%:   W5 SOAR  '$&@#######@  v{version}".format(version="0.5.5"))
+    print(" ########&&&%:   W5 SOAR  '$&@#######@  v{version}".format(version="0.5.6"))
     print("=============================================")
     print("* Web : https://w5.io")
     print("* Github : https://github.com/w5hub/w5")
     print("=============================================")
 
     if platform.system() == 'Windows':
-        print("* Running on http://{host}:{port}/ (Press CTRL+C to quit)".format(host=kwargs["host"],
-                                                                                 port=kwargs["port"]))
+        print("* Running on http://{host}:{port}/ (Press CTRL+C to quit)".format(
+            host=kwargs["host"],
+            port=kwargs["port"]
+        ))
 
 
 def start_w5(**kwargs):
     w5_info(host=kwargs["host"], port=kwargs["port"])
 
-    if platform.system() != 'Windows':
+    if platform.system() == 'Windows':
         from core import start
         from gevent import pywsgi
         from geventwebsocket.handler import WebSocketHandler
