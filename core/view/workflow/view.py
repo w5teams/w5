@@ -36,6 +36,7 @@ def get_user_list():
             Workflow.__table__ + '.webhook_app',
             Workflow.__table__ + '.input_app',
             Workflow.__table__ + '.for_list',
+            Workflow.__table__ + '.thumbnail'
         )
 
         if str(type) != "0":
@@ -99,7 +100,8 @@ def post_workflow_add():
                 'edge_marker': "block",
                 'edge_color': "#c7342e",
                 'edge_connector': "normal",
-                'edge_router': "normal",
+                'edge_router': "metro",
+                'thumbnail': "",
                 'update_time': Time.get_date_time(),
                 'create_time': Time.get_date_time()
             })
@@ -123,6 +125,7 @@ def post_workflow_add():
             edge_color = request.json.get("edge_color", "")
             edge_connector = request.json.get("edge_connector", "")
             edge_router = request.json.get("edge_router", "")
+            thumbnail = request.json.get("thumbnail", "")
 
             Workflow.insert({
                 'uuid': str(uuid),
@@ -148,6 +151,7 @@ def post_workflow_add():
                 'edge_color': edge_color,
                 'edge_connector': edge_connector,
                 'edge_router': edge_router,
+                'thumbnail': thumbnail,
                 'update_time': Time.get_date_time(),
                 'create_time': Time.get_date_time()
             })
@@ -183,6 +187,7 @@ def get_workflow_detail():
             'edge_color',
             'edge_connector',
             'edge_router',
+            'thumbnail',
             'update_time',
             'create_time'
         ).where("uuid", uuid).first()
@@ -214,6 +219,7 @@ def post_workflow_update():
         edge_color = request.json.get("edge_color", "")
         edge_connector = request.json.get("edge_connector", "")
         edge_router = request.json.get("edge_router", "")
+        thumbnail = request.json.get("thumbnail", "")
 
         if str(controller_data) != "{}":
             is_exist = json.loads(controller_data).get(timer_app)
@@ -258,6 +264,7 @@ def post_workflow_update():
             'edge_color': edge_color,
             'edge_connector': edge_connector,
             'edge_router': edge_router,
+            'thumbnail': thumbnail,
             'update_time': Time.get_date_time()
         })
 

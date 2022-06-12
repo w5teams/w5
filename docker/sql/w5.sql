@@ -303,6 +303,7 @@ CREATE TABLE `w5_workflow` (
   `edge_color` varchar(10) NOT NULL DEFAULT '',
   `edge_connector` varchar(10) NOT NULL DEFAULT '',
   `edge_router` varchar(10) NOT NULL DEFAULT '',
+  `thumbnail` longtext,
   `update_time` datetime DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
