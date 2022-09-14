@@ -60,13 +60,79 @@ def post_app_import():
             if os.path.exists(save_path):
                 return Response.re(err=ErrUploadAppExist)
 
-            status = Zip.save(zip_path=file_path, save_path=save_path)
+            status, text = Zip.save(zip_path=file_path, save_path=save_path)
 
             if status:
                 shutil.rmtree(tmp_dir)
                 return Response.re()
             else:
                 shutil.rmtree(tmp_dir)
-                return Response.re(err=ErrUploadZipR)
+                return Response.re(err=ErrMsg(errcode=9030, errmsg=text))
         else:
             return Response.re(err=ErrUploadZip)
+
+
+@r.route("/post/app/upload", methods=['GET', 'POST'])
+def post_app_upload():
+    if request.method == "POST":
+        wid = request.json.get("wid", "")
+        name = request.json.get("name", "")
+        type = request.json.get("type", "")
+        author = request.json.get("author", "")
+        email = request.json.get("email", "")
+        description = request.json.get("description", "")
+        version = request.json.get("version", "")
+        github = request.json.get("github", "")
+        app_dir = request.json.get("app_dir", "")
+
+        result = Cloud(apps_path=current_app.config["apps_path"]).upload(
+            wid,
+            name,
+            type,
+            author,
+            email,
+            description,
+            version,
+            github,
+            app_dir
+        )
+
+        if result == "success":
+            return Response.re()
+        else:
+            return Response.re(err=ErrMsg(errcode=9028, errmsg=result))
+
+
+@r.route("/post/app/download", methods=['GET', 'POST'])
+def post_app_download():
+    if request.method == "POST":
+        zip_url = request.json.get("zip_url", "")
+        app_dir = request.json.get("app_dir", "")
+        wid = request.json.get("wid", "")
+
+        bools, text = Cloud(apps_path=current_app.config["apps_path"]).download(
+            zip_url=zip_url,
+            app_dir=app_dir,
+            wid=wid
+        )
+
+        if bools:
+            return Response.re()
+        else:
+            return Response.re(err=ErrMsg(errcode=9029, errmsg=text))
+
+
+@r.route("/get/app/cloud_list", methods=['GET', 'POST'])
+def post_app_cloud_list():
+    if request.method == "POST":
+        result = Cloud().list()
+        return Response.re(data=result)
+
+
+@r.route("/get/app/cloud_info", methods=['GET', 'POST'])
+def post_app_cloud_info():
+    if request.method == "POST":
+        wid = request.json.get("wid", "")
+        print(wid)
+        result = Cloud().wid_info(wid=wid)
+        return Response.re(data=result)

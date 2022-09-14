@@ -304,15 +304,16 @@ def get_user_nav_list():
             Nav.__table__ + '.id',
             '=',
             RoleNav.__table__ + '.nav_id'
-        ).select(
+        ).distinct().select(
             Nav.__table__ + '.name',
             Nav.__table__ + '.path',
             Nav.__table__ + '.key',
             Nav.__table__ + '.icon',
             Nav.__table__ + '.is_menu',
+            Nav.__table__ + '.order'
         ).where(
             UserRole.__table__ + '.user_id', user_id
-        ).group_by(Nav.__table__ + '.name').order_by('order', 'asc').get()
+        ).order_by('order', 'asc').get()
 
         result = []
 
