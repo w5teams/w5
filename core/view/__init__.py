@@ -23,17 +23,17 @@ class Decorator(object):
 
                 g.payload = json.dumps(payload, ensure_ascii=False)
 
-            # if "api/v1" in request.path and request.path not in no_path:
-            #     if request.method == "POST":
-            #         token = request.headers.get("token")
-            #
-            #         if token:
-            #             from core import redis
-            #
-            #             if redis.exists(token) == 0:
-            #                 return Response.re(ErrToken)
-            #         else:
-            #             return Response.re(ErrToken)
+            if "api/v1" in request.path and request.path not in no_path:
+                if request.method == "POST":
+                    token = request.headers.get("token")
+
+                    if token:
+                        from core import redis
+
+                        if redis.exists(token) == 0:
+                            return Response.re(ErrToken)
+                    else:
+                        return Response.re(ErrToken)
 
         @app.after_request
         def after_request(resp):
