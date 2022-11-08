@@ -20,8 +20,7 @@ def login():
         md5_password = Random.make_md5_password(string=str(passwd))
 
         if md5_password == user.passwd:
-
-            token = Random.make_token(string=account)
+            token = "W5_TOKEN_" + Random.make_token(string=account)
 
             redis.set(token, str(user.id), ex=60 * 60 * 24 * 7)
 

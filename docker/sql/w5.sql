@@ -236,7 +236,7 @@ CREATE TABLE `w5_users` (
   `nick_name` varchar(20) NOT NULL DEFAULT '',
   `avatar` text,
   `email` varchar(50) NOT NULL DEFAULT '',
-  `token` varchar(32) NOT NULL DEFAULT '',
+  `token` varchar(50) NOT NULL DEFAULT '',
   `status` int NOT NULL DEFAULT '0',
   `update_time` datetime DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,

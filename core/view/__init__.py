@@ -27,7 +27,7 @@ class Decorator(object):
                 if request.method == "POST":
                     token = request.headers.get("token")
 
-                    if token:
+                    if token and "W5_TOKEN_" in token:
                         from core import redis
 
                         if redis.exists(token) == 0:
