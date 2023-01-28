@@ -24,6 +24,7 @@ services:
       - ./docker/config.ini:/w5/config.ini
       - ./docker/apps:/w5/apps
       - ./docker/logs:/opt
+      - /etc/localtime:/etc/localtime
     networks:
       - w5Net
 
