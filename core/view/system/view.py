@@ -127,15 +127,20 @@ def init_timer():
         manage_timer = ManageTimer()
         manage_timer.start()
 
-        s = ThreadedServer(service=manage_timer, port=53124, auto_register=False)
-        s.start()
+        rpc = ThreadedServer(service=manage_timer, port=53124, auto_register=False)
+        rpc.start()
 
-    result = redis.set("manage_timer_lock", 1, nx=True, ex=8)
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(("127.0.0.1", 53124))
+        s.shutdown(2)
+    except:
+        result = redis.set("manage_timer_lock", 1, nx=True, ex=8)
 
-    if result:
-        t = threading.Thread(target=setting)
-        t.setDaemon(True)
-        t.start()
+        if result:
+            t = threading.Thread(target=setting)
+            t.setDaemon(True)
+            t.start()
 
 
 def init_async():

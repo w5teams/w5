@@ -1,0 +1,64 @@
+version: '3'
+services:
+  web:
+    build: .
+    restart: always
+    container_name: w5_web
+    platform: "linux/amd64"
+    ports:
+      - "8888:8888"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      MYSQL_HOST: "mysql"
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: "w5_db"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "w5_12345678"
+      REDIS_HOST: "redis"
+      REDIS_PORT: 6379
+      REDIS_DATABASE: 0
+      REDIS_PASSWORD: ""
+    volumes:
+      - ./docker/config.ini:/w5/config.ini
+      - ./docker/apps:/w5/apps
+      - ./docker/logs:/opt
+    networks:
+      - w5Net
+
+  mysql:
+    image: mysql
+    restart: always
+    container_name: w5_mysql
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./docker/sql:/docker-entrypoint-initdb.d
+      - ./docker/conf.d:/etc/mysql/conf.d
+      - ./docker/mysql_db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "w5_12345678"
+      TZ: Asia/Shanghai
+    command:
+      --max_connections=1000
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --default-authentication-plugin=mysql_native_password
+    networks:
+      - w5Net
+
+  redis:
+    image: redis:alpine
+    restart: always
+    container_name: w5_redis
+    environment:
+      REDIS_PASSWORD: ""
+    volumes:
+      - ./docker/redis_db:/data
+    networks:
+      - w5Net
+
+networks:
+  w5Net:
+    driver: bridge

@@ -132,3 +132,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+docker/apps
+docker/mysql_db
+docker/redis_db
+docker/logs
+docker/config.ini
+test.py

@@ -1,0 +1,12 @@
+docker
+.git
+.gitignore
+LICENSE
+images
+README.md
+.idea
+.DS_Store
+docker-compose.yml
+.dockerignore
+Dockerfile
+!docker/supervisord.conf
