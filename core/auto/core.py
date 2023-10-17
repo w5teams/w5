@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # encoding:utf-8
 # cython: language_level=3
+
+# 希望您，能提交代码帮助 W5 变得更好，欢迎联系三斤交流
+
 import re
 import copy
 import json
