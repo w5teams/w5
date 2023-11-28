@@ -21,4 +21,10 @@ from core.utils.version import Version as VersionUtil
 from rpyc.utils.server import ThreadedServer
 from flask import (request, current_app, Blueprint)
 from werkzeug.utils import secure_filename
-from core.auto.core import auto_execute, ManageTimer
+
+if platform.system() == 'Windows':
+    from core.auto.windows.core import auto_execute, ManageTimer
+elif platform.system() == 'Linux':
+    from core.auto.linux.core import auto_execute, ManageTimer
+elif platform.system() == "Darwin":
+    print("Mac platform is not supported.")
