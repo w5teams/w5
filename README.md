@@ -55,7 +55,7 @@
 - **官网**：https://w5.io
 - **文档**：https://w5.io/help/  (文档有完整的教程)
 - **Github**: https://github.com/w5teams/w5 (感觉项目好的请来个 Star)
-- **前端**：https://github.com/w5teams/w5_web (前端才是 W5 的核心)
+- **前端**：https://github.com/w5teams/w5-web (前端才是 W5 的核心)
 
 ## 如何赞助
 

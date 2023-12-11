@@ -24,7 +24,7 @@ async def send(host, port, user, passwd, encrypt, sender, to, title, type, text)
         if encrypt == 'none':
             w5_smtp = smtplib.SMTP()
             w5_smtp.connect(host, int(port))
-        elif encrypt == 'tsl':
+        elif encrypt == 'tls':
             w5_smtp = smtplib.SMTP(host, int(port))
             w5_smtp.starttls()
         else:

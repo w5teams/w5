@@ -41,7 +41,7 @@
         "default": "none",
         "data": [
           "none",
-          "tsl",
+          "tls",
           "ssl"
         ]
       },
